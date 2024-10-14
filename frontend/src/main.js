@@ -1,3 +1,5 @@
+import './assets/styles/main.css'
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -18,6 +20,10 @@ app.use(PrimeVue, {
     preset: Aura,
     options: {
       darkModeSelector: '.dark',
+      cssLayer: {
+        name: 'primevue',
+        order: 'tailwind-base, primevue, tailwind-utilities',
+      },
     },
   },
 })
