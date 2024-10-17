@@ -1,29 +1,3 @@
-<template>
-    <div
-        class="flex flex-col items-center justify-center min-h-screen text-gray-800 dark:text-white p-4 relative overflow-hidden">
-        <div class="text-center z-10 space-y-6">
-            <h1 class="text-4xl md:text-5xl font-bold relative">
-                <span ref="greetingRef" class="inline-block"></span>
-                <span class="inline-block w-0.5 h-8 bg-gray-800 dark:bg-white animate-blink ml-1"
-                    :class="{ 'opacity-0': !showCursor }"></span>
-            </h1>
-            <div ref="contentRef" class="space-y-6 transition-opacity duration-1000"
-                :class="{ 'opacity-0': !showContent, 'opacity-100': showContent }">
-                <h2 class="text-3xl md:text-4xl font-bold">
-                    <span class="text-teal-500 dark:text-teal-400">It's me </span>
-                    <span ref="alternatingTextRef" class="text-yellow-500 dark:text-yellow-400"></span>
-                </h2>
-                <p class="text-xl md:text-2xl">{{ title }}</p>
-                <p class="text-lg text-gray-600 dark:text-gray-400">{{ subtitle }}</p>
-                <router-link v-if="contactSection" :to="'/' + contactSection.path"
-                    class="inline-block px-8 py-3 font-bold text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 bg-gradient-to-bl from-primary-400 to-primary-600 hover:from-primary-500 hover:to-primary-700 dark:from-primary-500 dark:to-primary-700 dark:hover:from-primary-600 dark:hover:to-primary-800">
-                    Get in Touch
-                </router-link>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { ref, onMounted, onUnmounted, computed, inject } from 'vue'
 
@@ -107,3 +81,29 @@ onUnmounted(() => {
     if (cursorInterval) clearInterval(cursorInterval)
 })
 </script>
+
+<template>
+    <div
+        class="flex flex-col items-center justify-center min-h-screen text-gray-800 dark:text-white p-4 relative overflow-hidden">
+        <div class="text-center z-10 space-y-6">
+            <h1 class="text-4xl md:text-5xl font-bold relative">
+                <span ref="greetingRef" class="inline-block"></span>
+                <span class="inline-block w-0.5 h-8 bg-gray-800 dark:bg-white animate-blink ml-1"
+                    :class="{ 'opacity-0': !showCursor }"></span>
+            </h1>
+            <div ref="contentRef" class="space-y-6 transition-opacity duration-1000"
+                :class="{ 'opacity-0': !showContent, 'opacity-100': showContent }">
+                <h2 class="text-3xl md:text-4xl font-bold">
+                    <span class="text-teal-500 dark:text-teal-400">It's me </span>
+                    <span ref="alternatingTextRef" class="text-yellow-500 dark:text-yellow-400"></span>
+                </h2>
+                <p class="text-xl md:text-2xl">{{ title }}</p>
+                <p class="text-lg text-gray-600 dark:text-gray-400">{{ subtitle }}</p>
+                <router-link v-if="contactSection" :to="'/' + contactSection.path"
+                    class="inline-block px-8 py-3 font-bold text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 bg-gradient-to-bl from-primary-400 to-primary-600 hover:from-primary-500 hover:to-primary-700 dark:from-primary-500 dark:to-primary-700 dark:hover:from-primary-600 dark:hover:to-primary-800">
+                    Get in Touch
+                </router-link>
+            </div>
+        </div>
+    </div>
+</template>

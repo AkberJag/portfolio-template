@@ -1,3 +1,20 @@
+<script setup>
+import { Mail } from 'lucide-vue-next';
+
+const props = defineProps({
+    data: {
+        type: Object,
+        required: true
+    }
+});
+
+const openEmailClient = () => {
+    if (props.data.email) {
+        window.location.href = `mailto:${props.data.email}`;
+    }
+};
+</script>
+
 <template>
     <div class="w-full max-w-md px-4 text-center">
         <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 md:mb-6">{{ data.title }}</h2>
@@ -18,20 +35,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-import { Mail } from 'lucide-vue-next';
-
-const props = defineProps({
-    data: {
-        type: Object,
-        required: true
-    }
-});
-
-const openEmailClient = () => {
-    if (props.data.email) {
-        window.location.href = `mailto:${props.data.email}`;
-    }
-};
-</script>

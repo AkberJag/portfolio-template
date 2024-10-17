@@ -1,51 +1,3 @@
-<template>
-    <div class="bg-slate-100 dark:bg-[#24292e] relative h-screen overflow-hidden transition-colors duration-300 focus:outline-none"
-        @wheel="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @keydown="handleKeyDown"
-        tabindex="0" ref="portfolioContainer">
-        <!-- Starry background -->
-        <div class="absolute inset-0 overflow-hidden opacity-55">
-            <div v-for="star in stars" :key="star.id" class="absolute text-xs md:text-sm" :class="star.color"
-                :style="{ left: star.left, top: star.top, animation: `twinkle ${star.duration}s infinite` }">
-                {{ star.shape }}
-            </div>
-        </div>
-
-        <SettingsButton />
-
-        <!-- Navigation dots -->
-        <nav class="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50">
-            <ul class="space-y-2 md:space-y-4">
-                <li v-for="(section, index) in portfolioData.sections" :key="section.name"
-                    @mouseenter="hoveredSection = index" @mouseleave="hoveredSection = null">
-                    <div class="relative group backdrop-filter backdrop-blur-lg">
-                        <button @click="goToSection(index)"
-                            class="w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ease-in-out focus:outline-none"
-                            :class="[
-                                currentSection === index
-                                    ? 'bg-primary-600 scale-150'
-                                    : 'bg-primary-300 hover:bg-primary-700 dark:hover:bg-white hover:opacity-100 opacity-60'
-                            ]" :aria-label="`Go to ${section.name} section`"></button>
-                        <span
-                            class="absolute right-6 top-1/2 transform -translate-y-1/2 px-2 py-1 rounded-md transition-all duration-300 whitespace-nowrap backdrop-filter backdrop-blur-lg bg-opacity-70 bg-gray-900 dark:bg-white text-white dark:text-gray-900"
-                            :class="getSectionNameClass(index)">
-                            {{ section.name }}
-                        </span>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Sections -->
-        <div class="h-screen transition-transform duration-700 ease-in-out"
-            :style="{ transform: `translateY(-${currentSection * 100}%)` }">
-            <section v-for="(section, index) in portfolioData.sections" :key="section.name"
-                :class="sectionClass(section.gradient.light, section.gradient.dark)">
-                <component :is="sectionComponents[section.component]" :data="section.content" />
-            </section>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { ref, watch, onMounted, computed, defineAsyncComponent, provide } from 'vue'
 import { useRouter } from 'vue-router'
@@ -175,6 +127,53 @@ onMounted(() => {
     portfolioContainer.value?.focus()
 })
 </script>
+<template>
+    <div class="bg-slate-100 dark:bg-[#24292e] relative h-screen overflow-hidden transition-colors duration-300 focus:outline-none"
+        @wheel="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @keydown="handleKeyDown"
+        tabindex="0" ref="portfolioContainer">
+        <!-- Starry background -->
+        <div class="absolute inset-0 overflow-hidden opacity-55">
+            <div v-for="star in stars" :key="star.id" class="absolute text-xs md:text-sm" :class="star.color"
+                :style="{ left: star.left, top: star.top, animation: `twinkle ${star.duration}s infinite` }">
+                {{ star.shape }}
+            </div>
+        </div>
+
+        <SettingsButton />
+
+        <!-- Navigation dots -->
+        <nav class="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50">
+            <ul class="space-y-2 md:space-y-4">
+                <li v-for="(section, index) in portfolioData.sections" :key="section.name"
+                    @mouseenter="hoveredSection = index" @mouseleave="hoveredSection = null">
+                    <div class="relative group backdrop-filter backdrop-blur-lg">
+                        <button @click="goToSection(index)"
+                            class="w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ease-in-out focus:outline-none"
+                            :class="[
+                                currentSection === index
+                                    ? 'bg-primary-600 scale-150'
+                                    : 'bg-primary-300 hover:bg-primary-700 dark:hover:bg-white hover:opacity-100 opacity-60'
+                            ]" :aria-label="`Go to ${section.name} section`"></button>
+                        <span
+                            class="absolute right-6 top-1/2 transform -translate-y-1/2 px-2 py-1 rounded-md transition-all duration-300 whitespace-nowrap backdrop-filter backdrop-blur-lg bg-opacity-70 bg-gray-900 dark:bg-white text-white dark:text-gray-900"
+                            :class="getSectionNameClass(index)">
+                            {{ section.name }}
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Sections -->
+        <div class="h-screen transition-transform duration-700 ease-in-out"
+            :style="{ transform: `translateY(-${currentSection * 100}%)` }">
+            <section v-for="(section, index) in portfolioData.sections" :key="section.name"
+                :class="sectionClass(section.gradient.light, section.gradient.dark)">
+                <component :is="sectionComponents[section.component]" :data="section.content" />
+            </section>
+        </div>
+    </div>
+</template>
 
 <style>
 @keyframes twinkle {
