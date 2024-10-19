@@ -1,6 +1,6 @@
 # Portfolio Website Template
 
-A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and LucaDe Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio.
+A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio.
 
 ## Demo
 
@@ -15,7 +15,7 @@ A fully customizable portfolio website template built using Vue.js, Tailwind CSS
 - **Ripple effect**: Easily add ripple effects using the v-ripple directive for buttons and interactive elements.
 - **Modern design**: Minimalistic, mobile-first design using Tailwind CSS.
 - **Fast and lightweight**: Powered by Vue.js for a responsive and dynamic experience.
-- **Icon support**: LucaDe Icons for seamless icon integration.
+- **Icon support**: Lucide Icons for seamless icon integration.
 - **Responsive layout**: Works on all screen sizes, from mobile to desktop.
 - **Easy setup**: Simple installation and configuration process.
 
