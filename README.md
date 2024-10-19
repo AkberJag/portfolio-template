@@ -21,11 +21,16 @@ A fully customizable portfolio website template built using Vue.js, Tailwind CSS
 
 ## How It Works
 
-### JSON-Based Sections
+### Adding a Section Component (e.g., ContactSection.vue)
 
-The sections of this portfolio are defined and managed via a JSON file, making it easy to modify the content and structure of the website.
+To add a new section, you need to create a corresponding Vue component (e.g., `ContactSection.vue`) and manage its data using the JSON configuration file. Here’s how to do it step-by-step:
 
-Here's an example of how a section is defined in the JSON file:
+1. **Create the Component:**
+
+   Create a new Vue component in your `components` folder. For example, `ContactSection.vue`
+
+2. **Define the Section in the JSON File:**
+   Next, define the new section in your portfolio-data.json file. This is where you can manage the content of each section. For example, to add the ContactSection, you could define it as follows:
 
 ```json
 {
