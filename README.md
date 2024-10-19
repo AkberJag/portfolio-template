@@ -123,8 +123,6 @@ const contactSection = computed(() =>
    cd portfolio-template
    ```
 
-````
-
 2. Install dependencies:
 
    ```bash
@@ -192,4 +190,7 @@ Contributions are welcome! If you'd like to improve this template or add new fea
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-````
+
+```
+
+```
