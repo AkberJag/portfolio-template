@@ -120,7 +120,7 @@ const contactSection = computed(() =>
 
    ```bash
    git clone https://github.com/your-username/portfolio-template.git
-   cd portfolio-template
+   cd portfolio-template/frontend
    ```
 
 2. Install dependencies:
