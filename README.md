@@ -170,10 +170,10 @@ The template currently supports English content. To extend this to other languag
 
 ## Dependencies
 
-- Vue.js 3: A progressive JavaScript framework for building user interfaces.
-- Tailwind CSS: A utility-first CSS framework for rapid UI development.
-- PrimeVue 4: A comprehensive UI component library for Vue.js.
-- LucaDe Icons: A flexible and customizable icon library.
+- [Vue.js 3](https://vuejs.org/): A progressive JavaScript framework for building user interfaces.
+- [Tailwind CSS](https://tailwindcss.com/): A utility-first CSS framework for rapid UI development.
+- [PrimeVue 4](https://primevue.org/): A comprehensive UI component library for Vue.js.
+- [Lucide Icons](https://lucide.dev//): A flexible and customizable icon library.
 
 ## Contributing
 
