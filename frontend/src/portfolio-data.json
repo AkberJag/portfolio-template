@@ -10,15 +10,69 @@
       },
       "content": {
         "greeting": "Hey there!",
-        "name": "Akber Jagannath",
+        "name": "John Doe",
         "secondaryName": "VU3CXF",
-        "title": "Your Friendly Neighborhood Python Developer",
+        "title": "Web Developer & Designer",
         "subtitle": "Ham Radio Enthusiast"
       }
     },
     {
+      "name": "About",
+      "path": "about",
+      "component": "AboutSection",
+      "gradient": {
+        "light": "from-green-500 to-teal-500",
+        "dark": "dark:from-green-800/20 dark:to-teal-800/20"
+      },
+      "content": {
+        "title": "About Me",
+        "description": "A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio."
+      }
+    },
+    {
+      "name": "Projects",
+      "path": "projects",
+      "component": "ProjectsSection",
+      "gradient": {
+        "light": "from-yellow-400 to-orange-500",
+        "dark": "dark:from-yellow-700/20 dark:to-orange-800/20"
+      },
+      "content": [
+        {
+          "title": "Project 1",
+          "description": "A Vue.js web application for task management.",
+          "link": "#",
+          "technologies": ["Vue.js", "Vuex", "Tailwind CSS", "Firebase"]
+        },
+        {
+          "title": "Project 2",
+          "description": "An e-commerce platform built with Vue and Node.js.",
+          "link": "#",
+          "technologies": ["Vue.js", "Node.js", "Express", "MongoDB"]
+        },
+        {
+          "title": "Project 3",
+          "description": "A responsive portfolio website using Vue and Tailwind CSS.",
+          "link": "#",
+          "technologies": ["Vue.js", "Tailwind CSS", "Vite"]
+        },
+        {
+          "title": "Project 4",
+          "description": "A real-time chat application with Vue and Firebase.",
+          "link": "#",
+          "technologies": ["Vue.js", "Firebase", "Vuex", "Vue Router"]
+        },
+        {
+          "title": "Project 5",
+          "description": "Another real-time chat application with Vue and Firebase.",
+          "link": "#",
+          "technologies": ["Vue.js", "Firebase", "Vuex", "Vue Router"]
+        }
+      ]
+    },
+    {
       "name": "Contact",
-      "path": "contact",
+      "path": "contacts",
       "component": "ContactSection",
       "gradient": {
         "light": "from-pink-500 to-red-500",
