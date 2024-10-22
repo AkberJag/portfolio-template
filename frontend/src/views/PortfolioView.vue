@@ -124,7 +124,20 @@ watch(
 )
 
 onMounted(() => {
-    portfolioContainer.value?.focus()
+    // Handle redirect from 404
+    const redirectFrom = sessionStorage.getItem('redirectFrom')
+    if (redirectFrom) {
+        sessionStorage.removeItem('redirectFrom')
+        const sectionIndex = portfolioData.sections.findIndex(
+            section => redirectFrom === section.path
+        )
+        if (sectionIndex !== -1) {
+            goToSection(sectionIndex)
+        } else {
+            // If section doesn't exist, stay at home
+            goToSection(0)
+        }
+    }
 })
 </script>
 <template>
