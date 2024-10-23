@@ -92,10 +92,9 @@ const handleKeyDown = (event) => {
     }
 }
 
-const sectionClass = (lightGradient, darkGradient) => `
+const sectionClass = () => `
   h-screen flex items-center justify-center p-4 md:p-8
   transition-all duration-700 ease-in-out
-  bg-gradient-to-br ${lightGradient} ${darkGradient}
 `
 
 const starColors = ['text-yellow-300', 'text-orange-300', 'text-pink-300', 'text-purple-300']
@@ -180,8 +179,7 @@ onMounted(() => {
         <!-- Sections -->
         <div class="h-screen transition-transform duration-700 ease-in-out"
             :style="{ transform: `translateY(-${currentSection * 100}%)` }">
-            <section v-for="(section, index) in portfolioData.sections" :key="section.name"
-                :class="sectionClass(section.gradient.light, section.gradient.dark)">
+            <section v-for="(section, index) in portfolioData.sections" :key="section.name" :class="sectionClass()">
                 <component :is="sectionComponents[section.component]" :data="section.content" />
             </section>
         </div>

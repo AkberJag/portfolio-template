@@ -11,7 +11,6 @@ A fully customizable portfolio website template built using Vue.js, Tailwind CSS
 - **Fully customizable**: Add, remove, or rearrange sections as needed using a JSON file.
 - **PrimeVue UI components**: Integration of PrimeVue 4 for high-quality UI components.
 - **Accent colors**: Support for Tailwind CSS predefined colors as accent colors.
-- **Gradient support**: Each section supports Tailwind CSS gradients for both light and dark themes.
 - **Ripple effect**: Easily add ripple effects using the v-ripple directive for buttons and interactive elements.
 - **Modern design**: Minimalistic, mobile-first design using Tailwind CSS.
 - **Fast and lightweight**: Powered by Vue.js for a responsive and dynamic experience.
@@ -39,10 +38,6 @@ To add a new section, you need to create a corresponding Vue component (e.g., `C
       "name": "Home",
       "path": "home",
       "component": "HomeSection",
-      "gradient": {
-        "light": "",
-        "dark": ""
-      },
       "content": {
         "greeting": "Hey there!",
         "name": "John Doe",
@@ -55,10 +50,6 @@ To add a new section, you need to create a corresponding Vue component (e.g., `C
       "name": "Contact",
       "path": "contact",
       "component": "ContactSection",
-      "gradient": {
-        "light": "from-pink-500 to-red-500",
-        "dark": "dark:from-pink-800/20 dark:to-red-800/20"
-      },
       "content": {
         "title": "Contact Me",
         "description": "Feel free to reach out to me via email or connect on social media!",
@@ -75,11 +66,6 @@ To add a new section, you need to create a corresponding Vue component (e.g., `C
   ]
 }
 ```
-
-### Accent Colors and Gradients
-
-- **Accent Colors**: Each section can have an accent color, which is a predefined color from Tailwind CSS. This allows for easy theming and customization without needing to write custom CSS.
-- **Gradients**: You can define gradient colors for both light and dark themes using Tailwind CSS's gradient utilities.
 
 ### Ripple Effect with v-ripple Directive
 
@@ -152,13 +138,6 @@ For step-by-step instructions on deploying your Vue.js project to GitHub Pages, 
 ### Adding/Removing Sections
 
 To add or remove sections, edit the `portfolio.json` file located in the root of the project. Add a new section object or remove an existing one. Each section requires a name, path, component, and content.
-
-### Accent Colors & Gradients
-
-To customize the colors of your sections:
-
-- **Accent Colors**: Use any of Tailwind CSS's predefined colors to set the accent color of each section.
-- **Gradients**: Define gradients for both light and dark modes by utilizing Tailwind's gradient utilities.
 
 ### Localization (TODO)
 

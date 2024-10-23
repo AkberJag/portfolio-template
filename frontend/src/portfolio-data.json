@@ -4,10 +4,6 @@
       "name": "Home",
       "path": "home",
       "component": "HomeSection",
-      "gradient": {
-        "light": "",
-        "dark": ""
-      },
       "content": {
         "greeting": "Hey there!",
         "name": "John Doe",
@@ -20,10 +16,6 @@
       "name": "About",
       "path": "about",
       "component": "AboutSection",
-      "gradient": {
-        "light": "from-green-500 to-teal-500",
-        "dark": "dark:from-green-800/20 dark:to-teal-800/20"
-      },
       "content": {
         "title": "About Me",
         "description": "A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio."
@@ -33,10 +25,6 @@
       "name": "Projects",
       "path": "projects",
       "component": "ProjectsSection",
-      "gradient": {
-        "light": "from-yellow-400 to-orange-500",
-        "dark": "dark:from-yellow-700/20 dark:to-orange-800/20"
-      },
       "content": [
         {
           "title": "Project 1",
@@ -74,10 +62,6 @@
       "name": "Contact",
       "path": "contacts",
       "component": "ContactSection",
-      "gradient": {
-        "light": "from-pink-500 to-red-500",
-        "dark": "dark:from-pink-800/20 dark:to-red-800/20"
-      },
       "content": {
         "title": "Contact Me",
         "description": "Feel free to reach out to me via email or connect on social media!",
