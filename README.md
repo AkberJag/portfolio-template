@@ -4,7 +4,7 @@ A fully customizable portfolio website template built using Vue.js, Tailwind CSS
 
 ## Demo
 
-[Live Demo](https://www.akberjag.github.io)
+[Live Demo](https://akberjag.github.io)
 
 ## Features
 
