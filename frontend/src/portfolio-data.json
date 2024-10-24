@@ -4,6 +4,7 @@
       "name": "Home",
       "path": "home",
       "component": "HomeSection",
+      "pageTitle": "John Doe | Web Developer & Designer",
       "content": {
         "greeting": "Hey there!",
         "name": "John Doe",
@@ -16,6 +17,7 @@
       "name": "About",
       "path": "about",
       "component": "AboutSection",
+      "pageTitle": "About Me | John Doe",
       "content": {
         "title": "About Me",
         "description": "A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio."
@@ -25,6 +27,7 @@
       "name": "Projects",
       "path": "projects",
       "component": "ProjectsSection",
+      "pageTitle": "Projects | John Doe",
       "content": [
         {
           "title": "Project 1",
@@ -62,6 +65,7 @@
       "name": "Contact",
       "path": "contacts",
       "component": "ContactSection",
+      "pageTitle": "Contact Me | John Doe",
       "content": {
         "title": "Contact Me",
         "description": "Feel free to reach out to me via email or connect on social media!",

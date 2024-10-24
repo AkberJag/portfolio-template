@@ -111,12 +111,18 @@ const stars = computed(() =>
     }))
 )
 
+const updateTitle = (index) => {
+    const section = portfolioData.sections[index]
+    document.title = section.pageTitle || section.name
+}
+
 watch(
     () => router.currentRoute.value.path,
     (newPath) => {
         const sectionIndex = portfolioData.sections.findIndex(section => newPath === `/${section.path}`)
         if (sectionIndex !== -1) {
             currentSection.value = sectionIndex
+            updateTitle(sectionIndex)
         }
     },
     { immediate: true }
