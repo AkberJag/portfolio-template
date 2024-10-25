@@ -95,6 +95,8 @@ const handleKeyDown = (event) => {
 const sectionClass = () => `
   h-screen flex items-center justify-center p-4 md:p-8
   transition-all duration-700 ease-in-out
+  scale-75 sm:scale-85 md:scale-90 lg:scale-95 xl:scale-100
+  transform-gpu
 `
 
 const starColors = ['text-yellow-300', 'text-orange-300', 'text-pink-300', 'text-purple-300']
@@ -182,8 +184,8 @@ onMounted(() => {
             </ul>
         </nav>
 
-        <!-- Sections -->
-        <div class="h-screen transition-transform duration-700 ease-in-out"
+        <!-- Sections container with max-width and centering -->
+        <div class="h-screen transition-transform duration-700 ease-in-out max-w-7xl mx-auto"
             :style="{ transform: `translateY(-${currentSection * 100}%)` }">
             <section v-for="(section, index) in portfolioData.sections" :key="section.name" :class="sectionClass()">
                 <component :is="sectionComponents[section.component]" :data="section.content" />
