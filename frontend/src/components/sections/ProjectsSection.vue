@@ -33,7 +33,7 @@ const responsiveOptions = ref([
             Projects</h2>
 
         <!-- Mobile Carousel: One item visible -->
-        <Carousel v-if="data.length > 4" :value="data" :numVisible="1" :numScroll="1" circular
+        <Carousel v-if="data.length > 2" :value="data" :numVisible="1" :numScroll="1" circular
             :responsiveOptions="responsiveOptions" class="pb-6 sm:hidden">
             <template #item="slotProps">
                 <div class="p-1 h-full">
@@ -62,7 +62,7 @@ const responsiveOptions = ref([
         </Carousel>
 
         <!-- Tablet Carousel: Two items visible -->
-        <Carousel v-if="data.length > 4" :value="data" :numVisible="2" :numScroll="1" circular
+        <Carousel v-if="data.length > 2" :value="data" :numVisible="2" :numScroll="1" circular
             :responsiveOptions="responsiveOptions" class="pb-6 hidden sm:block lg:hidden">
             <template #item="slotProps">
                 <div class="p-2 h-full">
@@ -91,7 +91,7 @@ const responsiveOptions = ref([
         </Carousel>
 
         <!-- Desktop Carousel: Three items visible -->
-        <Carousel v-if="data.length > 4" :value="data" :numVisible="3" :numScroll="1" circular
+        <Carousel v-if="data.length > 2" :value="data" :numVisible="3" :numScroll="1" circular
             :responsiveOptions="responsiveOptions" class="pb-6 hidden lg:block">
             <template #item="slotProps">
                 <div class="p-2 h-full">
@@ -119,7 +119,7 @@ const responsiveOptions = ref([
             </template>
         </Carousel>
 
-        <!-- Grid view for when less than 4 projects -->
+        <!-- Grid view for when less than 2 projects -->
         <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div v-for="project in data" :key="project.title"
                 class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex flex-col h-full">
