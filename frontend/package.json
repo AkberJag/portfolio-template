@@ -13,6 +13,7 @@
   "dependencies": {
     "@primevue/themes": "^4.1.0",
     "lucide-vue-next": "^0.452.0",
+    "markdown-it": "^14.1.0",
     "pinia": "^2.2.4",
     "primevue": "^4.1.0",
     "tailwindcss-primeui": "^0.3.4",
