@@ -1,11 +1,19 @@
 <script setup>
 import { defineProps } from 'vue';
+import MarkdownIt from 'markdown-it';
+
+// Initialize markdown-it parser
+const md = new MarkdownIt();
+
 const props = defineProps({
     data: {
         type: Object,
         required: true
     }
 });
+
+// Convert markdown description to HTML
+const formattedDescription = md.render(props.data.description);
 </script>
 
 <template>
@@ -13,8 +21,7 @@ const props = defineProps({
         <h2 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6">
             {{ data.title }}
         </h2>
-        <p class="text-sm md:text-lg text-gray-600 dark:text-gray-300">
-            {{ data.description }}
+        <p class="text-sm md:text-lg text-gray-600 dark:text-gray-300" v-html="formattedDescription">
         </p>
     </div>
 </template>
