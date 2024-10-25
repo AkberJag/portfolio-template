@@ -154,7 +154,25 @@ const contactSection = computed(() =>
 
 ### Deploying to GitHub Pages
 
-For step-by-step instructions on deploying your Vue.js project to GitHub Pages, please refer to the official Vue.js documentation: [Vue CLI - Deployment to GitHub Pages.](https://cli.vuejs.org/guide/deployment.html#github-pages)
+You have two options for deploying to GitHub Pages:
+
+#### Option 1: Using the Deployment Script
+
+1. Run the deployment script from the root of the project:
+
+   ```bash
+   ./deploy_gh_pages.sh
+   ```
+
+2. Configure GitHub Pages settings:
+   - Go to your repository settings
+   - Navigate to Pages section
+   - Under "Build and deployment", select `gh-pages` branch
+   - Click Save
+
+#### Option 2: Manual Deployment
+
+For step-by-step instructions on manually deploying your Vue.js project to GitHub Pages, please refer to the official Vue.js documentation: [Vue CLI - Deployment to GitHub Pages](https://cli.vuejs.org/guide/deployment.html#github-pages)
 
 ## Customization
 
