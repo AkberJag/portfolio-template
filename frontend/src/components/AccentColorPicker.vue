@@ -1,4 +1,3 @@
-<!-- AccentColorPicker.vue -->
 <script setup>
 import { CheckIcon } from 'lucide-vue-next'
 import colors from 'tailwindcss/colors'
