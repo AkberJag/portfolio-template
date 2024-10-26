@@ -1,14 +1,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, inject } from 'vue'
 
-const props = defineProps({
-    data: {
-        type: Object,
-        required: true
-    }
-})
+const data = {
+    "greeting": "Hey there!",
+    "name": "John Doe",
+    "secondaryName": "VU3CXF",
+    "title": "Web Developer & Designer",
+    "subtitle": "Ham Radio Enthusiast"
+}
 
-const { greeting, name, secondaryName, title, subtitle } = props.data
 const sections = inject('sections')
 
 const contactSection = computed(() => sections.find(section => section.name === 'Contact'))
@@ -55,23 +55,23 @@ const blinkCursor = () => {
 }
 
 const alternateText = async () => {
-    if (secondaryName) {
+    if (data.secondaryName) {
         while (true) {
-            await typeWriter(alternatingTextRef.value, name, 100)
+            await typeWriter(alternatingTextRef.value, data.name, 100)
             await new Promise(resolve => setTimeout(resolve, 5000))
             await eraseText(alternatingTextRef.value)
-            await typeWriter(alternatingTextRef.value, secondaryName, 100)
+            await typeWriter(alternatingTextRef.value, data.secondaryName, 100)
             await new Promise(resolve => setTimeout(resolve, 3000))
             await eraseText(alternatingTextRef.value)
         }
     } else {
-        await typeWriter(alternatingTextRef.value, name, 100)
+        await typeWriter(alternatingTextRef.value, data.name, 100)
     }
 }
 
 onMounted(async () => {
     blinkCursor()
-    await typeWriter(greetingRef.value, greeting)
+    await typeWriter(greetingRef.value, data.greeting)
     showContent.value = true
     await new Promise(resolve => setTimeout(resolve, 1000)) // Wait for content to fade in
     alternateText()
@@ -97,8 +97,8 @@ onUnmounted(() => {
                     <span class="text-teal-500 dark:text-teal-400">It's me </span>
                     <span ref="alternatingTextRef" class="text-yellow-500 dark:text-yellow-400"></span>
                 </h2>
-                <p class="text-xl md:text-2xl">{{ title }}</p>
-                <p class="text-lg text-gray-600 dark:text-gray-400">{{ subtitle }}</p>
+                <p class="text-xl md:text-2xl">{{ data.title }}</p>
+                <p class="text-lg text-gray-600 dark:text-gray-400">{{ data.subtitle }}</p>
                 <router-link v-if="contactSection" :to="'/' + contactSection.path"
                     class="inline-block px-8 py-3 font-bold text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 bg-gradient-to-bl from-primary-400 to-primary-600 hover:from-primary-500 hover:to-primary-700 dark:from-primary-500 dark:to-primary-700 dark:hover:from-primary-600 dark:hover:to-primary-800">
                     Get in Touch

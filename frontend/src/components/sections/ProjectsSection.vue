@@ -1,13 +1,40 @@
 <script setup>
-import { ref, defineProps } from 'vue';
-import Carousel from 'primevue/carousel';
+import { ref } from 'vue';
+import Carousel from '../TheCarousel.vue';
 
-const props = defineProps({
-    data: {
-        type: Array,
-        required: true
+
+const data = [
+    {
+        "title": "Project 1",
+        "description": "A Vue.js web application for task management.",
+        "link": "#",
+        "technologies": ["Vue.js", "Vuex", "Tailwind CSS", "Firebase"]
+    },
+    {
+        "title": "Project 2",
+        "description": "An e-commerce platform built with Vue and Node.js.",
+        "link": "#",
+        "technologies": ["Vue.js", "Node.js", "Express", "MongoDB"]
+    },
+    {
+        "title": "Project 3",
+        "description": "A responsive portfolio website using Vue and Tailwind CSS.",
+        "link": "#",
+        "technologies": ["Vue.js", "Tailwind CSS", "Vite"]
+    },
+    {
+        "title": "Project 4",
+        "description": "A real-time chat application with Vue and Firebase.",
+        "link": "#",
+        "technologies": ["Vue.js", "Firebase", "Vuex", "Vue Router"]
+    },
+    {
+        "title": "Project 5",
+        "description": "Another real-time chat application with Vue and Firebase.",
+        "link": "#",
+        "technologies": ["Vue.js", "Firebase", "Vuex", "Vue Router"]
     }
-});
+]
 
 const responsiveOptions = ref([
     {
@@ -33,7 +60,7 @@ const responsiveOptions = ref([
             Projects</h2>
 
         <!-- Mobile Carousel: One item visible -->
-        <Carousel v-if="data.length > 2" :value="data" :numVisible="1" :numScroll="1" circular
+        <Carousel v-if="data.length > 2" :items="data" :numVisible="1" :numScroll="1" circular
             :responsiveOptions="responsiveOptions" class="pb-6 sm:hidden">
             <template #item="slotProps">
                 <div class="p-1 h-full">
@@ -62,7 +89,7 @@ const responsiveOptions = ref([
         </Carousel>
 
         <!-- Tablet Carousel: Two items visible -->
-        <Carousel v-if="data.length > 2" :value="data" :numVisible="2" :numScroll="1" circular
+        <Carousel v-if="data.length > 2" :items="data" :numVisible="2" :numScroll="1" circular
             :responsiveOptions="responsiveOptions" class="pb-6 hidden sm:block lg:hidden">
             <template #item="slotProps">
                 <div class="p-2 h-full">
@@ -91,7 +118,7 @@ const responsiveOptions = ref([
         </Carousel>
 
         <!-- Desktop Carousel: Three items visible -->
-        <Carousel v-if="data.length > 2" :value="data" :numVisible="3" :numScroll="1" circular
+        <Carousel v-if="data.length > 2" :items="data" :numVisible="3" :numScroll="1" circular
             :responsiveOptions="responsiveOptions" class="pb-6 hidden lg:block">
             <template #item="slotProps">
                 <div class="p-2 h-full">
