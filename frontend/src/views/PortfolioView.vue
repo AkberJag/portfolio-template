@@ -15,11 +15,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, defineAsyncComponent } from 'vue'
+import { ref, onMounted, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
-
 import portfolioData from '@/portfolio-data.json'
-
 import NavigationDots from '@/components/NavigationDots.vue'
 import SettingsButton from '@/components/SettingsButton.vue'
 import { provide } from 'vue'
@@ -40,6 +38,9 @@ const router = useRouter()
 const scrollContainer = ref(null)
 const currentSection = ref(portfolioData.sections[0].path)
 const isScrolling = ref(false)
+
+// Set initial page title
+document.title = portfolioData.sections[0].pageTitle
 
 const scrollToSection = (path) => {
   const index = portfolioData.sections.findIndex(section => section.path === path)
@@ -62,9 +63,16 @@ const updateCurrentSection = () => {
     const windowHeight = window.innerHeight
     const index = Math.round(scrollPosition / windowHeight)
     const newPath = portfolioData.sections[index].path
+
     if (currentSection.value !== newPath) {
       currentSection.value = newPath
       router.push({ path: `/${newPath}` })
+
+      // Update page title when section changes
+      const section = portfolioData.sections[index]
+      if (section) {
+        document.title = section.pageTitle
+      }
     }
   }
 }
@@ -74,23 +82,31 @@ const handleRouteChange = (to) => {
   if (path && portfolioData.sections.some(section => section.path === path)) {
     currentSection.value = path
     scrollToSection(path)
+
+    // Update page title on route change
+    const section = portfolioData.sections.find(section => section.path === path)
+    if (section) {
+      document.title = section.pageTitle
+    }
   }
 }
 
 onMounted(() => {
   scrollContainer.value.addEventListener('scroll', updateCurrentSection)
-  handleRouteChange(router.currentRoute.value)
+
+  // Handle initial route
+  const initialPath = router.currentRoute.value.path
+  if (initialPath === '/') {
+    // If we're at the root path, set title to first section
+    document.title = portfolioData.sections[0].pageTitle
+  } else {
+    // Otherwise handle the current route
+    handleRouteChange(router.currentRoute.value)
+  }
 
   // Use afterEach navigation guard to handle route changes
   router.afterEach((to) => {
     handleRouteChange(to)
   })
-})
-
-watch(currentSection, (newPath) => {
-  const section = portfolioData.sections.find(section => section.path === newPath)
-  if (section) {
-    document.title = section.pageTitle
-  }
 })
 </script>
