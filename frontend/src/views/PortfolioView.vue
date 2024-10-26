@@ -1,209 +1,96 @@
+<template>
+  <div class="relative h-screen overflow-hidden bg-slate-100 dark:bg-[#24292e] transition-colors duration-700">
+    <StarryBackground class="absolute inset-0 z-0" />
+    <div class="relative z-10 h-full overflow-y-scroll snap-y snap-mandatory bg-transparent" ref="scrollContainer">
+      <div v-for="section in portfolioData.sections" :key="section.path"
+        class="h-screen snap-start flex items-center justify-center" style="scroll-snap-align: start;">
+        <component :is="sectionComponents[section.component]" :data="section.content"
+          class="w-full max-w-7xl px-4 sm:px-6 lg:px-8" />
+      </div>
+    </div>
+    <NavigationDots :sections="portfolioData.sections" :currentSection="currentSection" @navigate="navigateToSection"
+      class="fixed right-4 top-1/2 transform -translate-y-1/2 z-20" />
+    <SettingsButton class="z-20" />
+  </div>
+</template>
+
 <script setup>
-import { ref, watch, onMounted, computed, defineAsyncComponent, provide } from 'vue'
+import { ref, onMounted, watch, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
-import SettingsButton from '@/components/SettingsButton.vue'
+
 import portfolioData from '@/portfolio-data.json'
 
-const router = useRouter()
-const currentSection = ref(0)
-const hoveredSection = ref(null)
-const isScrolling = ref(false)
-const showNewPageLabel = ref(false)
-const portfolioContainer = ref(null)
-const touchStartY = ref(0)
+import NavigationDots from '@/components/NavigationDots.vue'
+import SettingsButton from '@/components/SettingsButton.vue'
+import { provide } from 'vue'
+import StarryBackground from '@/components/StarryBackground.vue'
+
+// Dynamically import section components
+const sectionComponents = {}
+portfolioData.sections.forEach(section => {
+  sectionComponents[section.component] = defineAsyncComponent(() =>
+    import(`@/components/sections/${section.component}.vue`)
+  )
+})
 
 // Provide the sections data to child components
 provide('sections', portfolioData.sections)
 
-// Preload all section components
-const sectionComponents = Object.fromEntries(
-    portfolioData.sections.map(section => [
-        section.component,
-        defineAsyncComponent(() => import(`@/components/sections/${section.component}.vue`))
-    ])
-)
+const router = useRouter()
+const scrollContainer = ref(null)
+const currentSection = ref(portfolioData.sections[0].path)
+const isScrolling = ref(false)
 
-const goToSection = (index) => {
-    currentSection.value = index
-    updateURL(portfolioData.sections[index].path)
-    showNewPageLabel.value = true
-    setTimeout(() => {
-        showNewPageLabel.value = false
-    }, 1500)
-}
-
-const updateURL = (section) => {
-    router.push({ path: `/${section}` })
-}
-
-const getSectionNameClass = (index) => {
-    if (showNewPageLabel.value && currentSection.value === index) {
-        return 'opacity-100 text-sm font-bold'
-    } else if (hoveredSection.value === index) {
-        return 'opacity-100 text-xs'
-    } else {
-        return 'opacity-0 text-[0px]'
-    }
-}
-
-const handleScroll = (event) => {
-    if (isScrolling.value) return
+const scrollToSection = (path) => {
+  const index = portfolioData.sections.findIndex(section => section.path === path)
+  if (index !== -1) {
     isScrolling.value = true
+    scrollContainer.value.children[index].scrollIntoView({ behavior: 'smooth' })
     setTimeout(() => {
-        if (event.deltaY > 0 && currentSection.value < portfolioData.sections.length - 1) {
-            goToSection(currentSection.value + 1)
-        } else if (event.deltaY < 0 && currentSection.value > 0) {
-            goToSection(currentSection.value - 1)
-        }
-        isScrolling.value = false
+      isScrolling.value = false
     }, 500)
+  }
 }
 
-const handleTouchStart = (event) => {
-    touchStartY.value = event.touches[0].clientY
+const navigateToSection = (path) => {
+  router.push({ path: `/${path}` })
 }
 
-const handleTouchMove = (event) => {
-    if (isScrolling.value) return
-    const touchEndY = event.touches[0].clientY
-    const deltaY = touchStartY.value - touchEndY
-    if (Math.abs(deltaY) > 50) {
-        isScrolling.value = true
-        setTimeout(() => {
-            if (deltaY > 0 && currentSection.value < portfolioData.sections.length - 1) {
-                goToSection(currentSection.value + 1)
-            } else if (deltaY < 0 && currentSection.value > 0) {
-                goToSection(currentSection.value - 1)
-            }
-            isScrolling.value = false
-        }, 500)
+const updateCurrentSection = () => {
+  if (!isScrolling.value) {
+    const scrollPosition = scrollContainer.value.scrollTop
+    const windowHeight = window.innerHeight
+    const index = Math.round(scrollPosition / windowHeight)
+    const newPath = portfolioData.sections[index].path
+    if (currentSection.value !== newPath) {
+      currentSection.value = newPath
+      router.push({ path: `/${newPath}` })
     }
+  }
 }
 
-const handleKeyDown = (event) => {
-    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-        if (currentSection.value < portfolioData.sections.length - 1) {
-            goToSection(currentSection.value + 1)
-        }
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
-        if (currentSection.value > 0) {
-            goToSection(currentSection.value - 1)
-        }
-    }
+const handleRouteChange = (to) => {
+  const path = to.path.slice(1)
+  if (path && portfolioData.sections.some(section => section.path === path)) {
+    currentSection.value = path
+    scrollToSection(path)
+  }
 }
-
-const sectionClass = () => `
-  h-screen flex items-center justify-center p-4 md:p-8
-  transition-all duration-700 ease-in-out
-  scale-75 sm:scale-85 md:scale-90 lg:scale-95 xl:scale-100
-  transform-gpu
-`
-
-const starColors = ['text-yellow-300', 'text-orange-300', 'text-pink-300', 'text-purple-300']
-const starShapes = ['•', '✦', '✧', '+', '×', '★', '✸']
-
-const stars = computed(() =>
-    Array.from({ length: 50 }, (_, i) => ({
-        id: i,
-        color: starColors[Math.floor(Math.random() * starColors.length)],
-        shape: starShapes[Math.floor(Math.random() * starShapes.length)],
-        left: `${Math.random() * 100}%`,
-        top: `${Math.random() * 100}%`,
-        duration: Math.random() * 4 + 2
-    }))
-)
-
-const updateTitle = (index) => {
-    const section = portfolioData.sections[index]
-    document.title = section.pageTitle || section.name
-}
-
-watch(
-    () => router.currentRoute.value.path,
-    (newPath) => {
-        const sectionIndex = portfolioData.sections.findIndex(section => newPath === `/${section.path}`)
-        if (sectionIndex !== -1) {
-            currentSection.value = sectionIndex
-            updateTitle(sectionIndex)
-        }
-    },
-    { immediate: true }
-)
 
 onMounted(() => {
-    // Handle redirect from 404
-    const redirectFrom = sessionStorage.getItem('redirectFrom')
-    if (redirectFrom) {
-        sessionStorage.removeItem('redirectFrom')
-        const sectionIndex = portfolioData.sections.findIndex(
-            section => redirectFrom === section.path
-        )
-        if (sectionIndex !== -1) {
-            goToSection(sectionIndex)
-        } else {
-            // If section doesn't exist, stay at home
-            goToSection(0)
-        }
-    }
+  scrollContainer.value.addEventListener('scroll', updateCurrentSection)
+  handleRouteChange(router.currentRoute.value)
+
+  // Use afterEach navigation guard to handle route changes
+  router.afterEach((to) => {
+    handleRouteChange(to)
+  })
+})
+
+watch(currentSection, (newPath) => {
+  const section = portfolioData.sections.find(section => section.path === newPath)
+  if (section) {
+    document.title = section.pageTitle
+  }
 })
 </script>
-<template>
-    <div class="bg-slate-100 dark:bg-[#24292e] relative h-screen overflow-hidden transition-colors duration-300 focus:outline-none"
-        @wheel="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove" @keydown="handleKeyDown"
-        tabindex="0" ref="portfolioContainer">
-        <!-- Starry background -->
-        <div class="absolute inset-0 overflow-hidden opacity-55">
-            <div v-for="star in stars" :key="star.id" class="absolute text-xs md:text-sm" :class="star.color"
-                :style="{ left: star.left, top: star.top, animation: `twinkle ${star.duration}s infinite` }">
-                {{ star.shape }}
-            </div>
-        </div>
-
-        <SettingsButton />
-
-        <!-- Navigation dots -->
-        <nav class="fixed right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-50">
-            <ul class="space-y-2 md:space-y-4">
-                <li v-for="(section, index) in portfolioData.sections" :key="section.name"
-                    @mouseenter="hoveredSection = index" @mouseleave="hoveredSection = null">
-                    <div class="relative group backdrop-filter backdrop-blur-lg">
-                        <button @click="goToSection(index)"
-                            class="w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ease-in-out focus:outline-none"
-                            :class="[
-                                currentSection === index
-                                    ? 'bg-primary-600 scale-150'
-                                    : 'bg-primary-300 hover:bg-primary-700 dark:hover:bg-white hover:opacity-100 opacity-60'
-                            ]" :aria-label="`Go to ${section.name} section`"></button>
-                        <span
-                            class="absolute right-6 top-1/2 transform -translate-y-1/2 px-2 py-1 rounded-md transition-all duration-300 whitespace-nowrap backdrop-filter backdrop-blur-lg bg-opacity-70 bg-gray-900 dark:bg-white text-white dark:text-gray-900"
-                            :class="getSectionNameClass(index)">
-                            {{ section.name }}
-                        </span>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- Sections container with max-width and centering -->
-        <div class="h-screen transition-transform duration-700 ease-in-out max-w-7xl mx-auto"
-            :style="{ transform: `translateY(-${currentSection * 100}%)` }">
-            <section v-for="(section, index) in portfolioData.sections" :key="section.name" :class="sectionClass()">
-                <component :is="sectionComponents[section.component]" :data="section.content" />
-            </section>
-        </div>
-    </div>
-</template>
-
-<style>
-@keyframes twinkle {
-
-    0%,
-    100% {
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
-</style>
