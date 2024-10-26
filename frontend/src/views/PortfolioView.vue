@@ -93,14 +93,25 @@ const handleRouteChange = (to) => {
 onMounted(() => {
   scrollContainer.value.addEventListener('scroll', updateCurrentSection)
 
-  // Handle initial route
-  const initialPath = router.currentRoute.value.path
-  if (initialPath === '/') {
-    // If we're at the root path, set title to first section
-    document.title = portfolioData.sections[0].pageTitle
+  // Handle redirection from 404 page
+  const redirectFrom = sessionStorage.getItem('redirectFrom')
+  if (redirectFrom) {
+    sessionStorage.removeItem('redirectFrom')
+    if (portfolioData.sections.some(section => section.path === redirectFrom)) {
+      router.push({ path: `/${redirectFrom}` })
+    } else {
+      router.push({ path: '/' })
+    }
   } else {
-    // Otherwise handle the current route
-    handleRouteChange(router.currentRoute.value)
+    // Handle initial route
+    const initialPath = router.currentRoute.value.path
+    if (initialPath === '/') {
+      // If we're at the root path, set title to first section
+      document.title = portfolioData.sections[0].pageTitle
+    } else {
+      // Otherwise handle the current route
+      handleRouteChange(router.currentRoute.value)
+    }
   }
 
   // Use afterEach navigation guard to handle route changes
