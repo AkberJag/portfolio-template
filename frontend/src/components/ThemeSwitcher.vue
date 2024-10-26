@@ -1,36 +1,59 @@
 <script setup>
-import { onUnmounted, computed } from 'vue';
-import { useThemeStore } from '@/stores/themeStore';
+import { ref, computed } from 'vue'
+import { Moon, Sun, Laptop } from 'lucide-vue-next'
 
-const themeStore = useThemeStore()
+const themeOptions = [
+    { icon: Sun, value: 'light' },
+    { icon: Moon, value: 'dark' },
+    { icon: Laptop, value: 'system' },
+]
+
+const theme = ref(localStorage.getItem('theme') || 'dark')
+const systemTheme = ref(getSystemTheme())
+
+function getSystemTheme() {
+    return typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+}
+
+const effectiveTheme = computed(() => {
+    return theme.value === 'system' ? systemTheme.value : theme.value
+})
 
 const displayTheme = computed(() => {
-    if (themeStore.theme === 'system') {
-        return `system - ${themeStore.effectiveTheme}`
+    if (theme.value === 'system') {
+        return `System (${effectiveTheme.value})`
     }
-    return themeStore.theme
+    return theme.value.charAt(0).toUpperCase() + theme.value.slice(1)
 })
 
-onUnmounted(() => {
-    themeStore.cleanUp()
-})
+function applyTheme() {
+    const isDark = effectiveTheme.value === 'dark'
+    document.documentElement.classList.toggle('dark', isDark)
+}
+
+function setTheme(newTheme) {
+    theme.value = newTheme
+    localStorage.setItem('theme', newTheme)
+    applyTheme()
+}
 </script>
 
 <template>
-    <div class="flex flex-col space-y-3">
-        <span class="text-sm font-medium dark:text-gray-400 capitalize">
-            Theme ({{ displayTheme }})
+    <div class="flex flex-col space-y-2">
+        <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
+            Theme: <span class="font-semibold text-gray-900 dark:text-white">{{ displayTheme }}</span>
         </span>
-        <div class="flex space-x-2">
-            <button v-for="option in themeStore.themeOptions" :key="option.value"
-                @click="themeStore.setTheme(option.value)" :class="[
-                    'p-2 rounded-md transition-colors',
-                    themeStore.theme === option.value
-                        ? 'bg-primary-400 dark:bg-primary-600 text-primary-foreground '
-                        : 'dark:hover:bg-primary-700 hover:bg-primary-200 '
-                ]" v-tooltip.top="{ value: option.value, showDelay: 500 }"
-                :aria-label="`Select ${option.value} theme`">
-                <component :is="option.icon" size="1.1em" />
+        <div class="flex space-x-1">
+            <button v-for="option in themeOptions" :key="option.value" @click="setTheme(option.value)" :class="[
+                'p-1.5 rounded-md transition-all duration-200 ease-in-out',
+                theme === option.value
+                    ? 'bg-white dark:bg-gray-600 text-primary-500 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+            ]" :aria-label="`Select ${option.value} theme`">
+                <component :is="option.icon" size="1.2em" />
             </button>
         </div>
     </div>
