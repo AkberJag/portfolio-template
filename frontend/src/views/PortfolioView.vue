@@ -4,8 +4,7 @@
     <div class="relative z-10 h-full overflow-y-scroll snap-y snap-mandatory bg-transparent" ref="scrollContainer">
       <div v-for="section in portfolioData.sections" :key="section.path"
         class="h-screen snap-start flex items-center justify-center" style="scroll-snap-align: start;">
-        <component :is="sectionComponents[section.component]" :data="section.content"
-          class="w-full max-w-7xl px-4 sm:px-6 lg:px-8" />
+        <component :is="sectionComponents[section.component]" class="w-full max-w-7xl px-4 sm:px-6 lg:px-8" />
       </div>
     </div>
     <NavigationDots :sections="portfolioData.sections" :currentSection="currentSection" @navigate="navigateToSection"
