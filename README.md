@@ -1,6 +1,6 @@
 # Portfolio Website Template
 
-A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio.
+A fully customizable portfolio website template built using Vue.js, Tailwind CSS, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio.
 
 ## Demo
 
@@ -9,15 +9,12 @@ A fully customizable portfolio website template built using Vue.js, Tailwind CSS
 ## Features
 
 - **Fully customizable**: Add, remove, or rearrange sections as needed using a JSON file.
-- **PrimeVue UI components**: Integration of PrimeVue 4 for high-quality UI components.
 - **Accent colors**: Support for Tailwind CSS predefined colors as accent colors.
-- **Ripple effect**: Easily add ripple effects using the v-ripple directive for buttons and interactive elements.
 - **Modern design**: Minimalistic, mobile-first design using Tailwind CSS.
 - **Fast and lightweight**: Powered by Vue.js for a responsive and dynamic experience.
 - **Icon support**: Lucide Icons for seamless icon integration.
 - **Responsive layout**: Works on all screen sizes, from mobile to desktop.
 - **Easy setup**: Simple installation and configuration process.
-- **Markdown support**: Write section content using Markdown syntax for rich text formatting.
 
 ## How It Works
 
@@ -30,7 +27,7 @@ To add a new section, you need to create a corresponding Vue component (e.g., `C
    Create a new Vue component in your `components` folder. For example, `ContactSection.vue`
 
 2. **Define the Section in the JSON File:**
-   Next, define the new section in your portfolio-data.json file. This is where you can manage the content of each section. You can use Markdown syntax in your content fields for rich text formatting.
+   Next, define the new section in your portfolio-data.json file. This is where you can manage the content of each section.
 
 ```json
 {
@@ -39,75 +36,28 @@ To add a new section, you need to create a corresponding Vue component (e.g., `C
       "name": "Home",
       "path": "home",
       "component": "HomeSection",
-      "content": {
-        "greeting": "Hey there!",
-        "name": "John Doe",
-        "secondaryName": "VU3CXF",
-        "title": "Your Friendly Neighborhood Python Developer",
-        "subtitle": "Ham Radio Enthusiast"
-      }
+      "pageTitle": "John Doe | Web Developer & Designer"
     },
     {
       "name": "About",
       "path": "about",
       "component": "AboutSection",
-      "content": {
-        "title": "About Me",
-        "description": "# About Me\n\nI'm a passionate developer with **5 years** of experience in:\n\n- Python Development\n- Web Technologies\n- Cloud Architecture\n\nCheck out my [GitHub profile](https://github.com/johndoe) for more!"
-      }
+      "pageTitle": "About Me | John Doe"
+    },
+    {
+      "name": "Projects",
+      "path": "projects",
+      "component": "ProjectsSection",
+      "pageTitle": "Projects | John Doe"
     },
     {
       "name": "Contact",
-      "path": "contact",
+      "path": "contacts",
       "component": "ContactSection",
-      "content": {
-        "title": "Contact Me",
-        "description": "Feel free to reach out to me via email or connect on social media!",
-        "email": "your.email@example.com",
-        "socialLinks": [
-          {
-            "name": "LinkedIn",
-            "url": "https://linkedin.com/in/yourprofile",
-            "icon": "M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-          }
-        ]
-      }
+      "pageTitle": "Contact Me | John Doe"
     }
   ]
 }
-```
-
-### Using Markdown in Section Content
-
-The template supports Markdown syntax in your JSON content fields (portfolio-data.json). This allows you to:
-
-- Use **bold**, _italic_, and other text formatting
-- Create lists and nested lists
-- Add links and images
-- Use headings and subheadings
-- Include code blocks and inline code
-- Create tables
-
-please refer the **AboutSection.vue** component for more implementation details
-
-### Ripple Effect with v-ripple Directive
-
-To add a ripple effect to buttons or other interactive elements, simply use the v-ripple directive:
-
-```vue
-<template>
-  <button v-ripple class="btn-primary">Click Me</button>
-</template>
-```
-
-### PrimeVue 4 Integration
-
-This template uses PrimeVue 4 to offer a wide range of ready-to-use UI components. Example of using PrimeVue's Button component:
-
-```vue
-<template>
-  <Button label="Click Me" v-ripple />
-</template>
 ```
 
 ### Vue.js provide/inject Pattern
@@ -192,8 +142,7 @@ The template currently supports English content. To extend this to other languag
 
 - [Vue.js 3](https://vuejs.org/): A progressive JavaScript framework for building user interfaces.
 - [Tailwind CSS](https://tailwindcss.com/): A utility-first CSS framework for rapid UI development.
-- [PrimeVue 4](https://primevue.org/): A comprehensive UI component library for Vue.js.
-- [Lucide Icons](https://lucide.dev//): A flexible and customizable icon library.
+- [Lucide Icons](https://lucide.dev/): A flexible and customizable icon library.
 
 ## Contributing
 
