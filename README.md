@@ -128,7 +128,7 @@ For step-by-step instructions on manually deploying your Vue.js project to GitHu
 
 ### Adding/Removing Sections
 
-To add or remove sections, edit the `portfolio.json` file located in the root of the project. Add a new section object or remove an existing one. Each section requires a name, path, component, and content.
+To add or remove sections, edit the `portfolio.json` file located in the root of the project. Add a new section object or remove an existing one. Each section requires a name, path, component, and pageTitle.
 
 ### Localization (TODO)
 
