@@ -1,9 +1,9 @@
 <script setup>
 import { Palette } from 'lucide-vue-next';
 import { ref, onMounted, onUnmounted } from 'vue'
-
 import ThemeSwitcher from './ThemeSwitcher.vue';
 import AccentColorPicker from './AccentColorPicker.vue';
+import ScrollBarToggle from './ScrollBarToggle.vue';
 
 const isOpen = ref(false)
 
@@ -33,7 +33,6 @@ onUnmounted(() => {
             @click="toggle" aria-haspopup="true" :aria-expanded="isOpen">
             <Palette class="w-6 h-6" />
         </button>
-
         <Teleport to="body">
             <Transition enter-active-class="transition duration-200 ease-out"
                 enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
@@ -46,9 +45,11 @@ onUnmounted(() => {
                         <div>
                             <ThemeSwitcher />
                         </div>
-
                         <div>
                             <AccentColorPicker />
+                        </div>
+                        <div>
+                            <ScrollBarToggle />
                         </div>
                     </div>
                     <div class="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 text-xs text-gray-500 dark:text-gray-400">

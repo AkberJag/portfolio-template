@@ -8,6 +8,10 @@ import NavigationDots from '@/components/NavigationDots.vue'
 import SettingsButton from '@/components/SettingsButton.vue'
 import StarryBackground from '@/components/StarryBackground.vue'
 
+// Add scrollbar visibility state
+const showScrollbar = ref(false)
+provide('showScrollbar', showScrollbar) // Provide to child components
+
 // Configuration constants
 const CONFIG = {
   SCROLL: {
@@ -133,7 +137,7 @@ const handleWheel = debounce((e) => {
 const updatePageTitle = (path) => {
   const section = sections.find(s => s.path === path)
   if (section) {
-    document.title = `${section.pageTitle} | Portfolio`
+    document.title = `${section.pageTitle}`
   }
 }
 
@@ -172,16 +176,17 @@ onMounted(() => {
 <template>
   <div class="relative h-screen overflow-hidden bg-slate-100 dark:bg-gray-900 transition-colors duration-700">
     <StarryBackground class="absolute inset-0" />
-    <!-- Main scroll container -->
+    <!-- Main scroll container with dynamic scrollbar classes -->
     <div ref="scrollContainer" @scroll="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove"
-      @touchend="handleTouchEnd" @wheel="handleWheel"
-      class="relative z-10 h-full overflow-y-auto snap-y snap-mandatory scroll-smooth">
+      @touchend="handleTouchEnd" @wheel="handleWheel" :class="[
+        'relative z-10 h-full overflow-y-auto snap-y snap-mandatory scroll-smooth',
+        showScrollbar ? 'scrollbar-visible' : 'scrollbar-hidden'
+      ]">
       <section v-for="section in sections" :key="section.path"
         class="h-screen flex items-center justify-center snap-start">
         <component :is="sectionComponents[section.component]" class="w-full max-w-7xl px-4 sm:px-6 lg:px-8" />
       </section>
     </div>
-    <!-- Navigation -->
     <NavigationDots :sections="sections" :currentSection="currentSection" @navigate="navigateToSection"
       class="fixed right-4 top-1/2 -translate-y-1/2 z-20" />
     <SettingsButton class="z-20" />
