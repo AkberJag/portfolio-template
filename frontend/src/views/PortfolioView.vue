@@ -27,6 +27,29 @@ import NavigationDots from '@/components/NavigationDots.vue'
 import SettingsButton from '@/components/SettingsButton.vue'
 import StarryBackground from '@/components/StarryBackground.vue'
 
+// Configuration constants
+const CONFIG = {
+  SCROLL: {
+    COOLDOWN: 500, // ms between scroll actions
+    THRESHOLD: 50, // minimum pixels for swipe detection
+    DEBOUNCE: 50, // ms for debounce delay
+    ANIMATION_DURATION: 100, // ms for smooth scroll
+  },
+  LAYOUT: {
+    Z_INDICES: {
+      BACKGROUND: 0,
+      CONTENT: 10,
+      NAVIGATION: 20,
+    },
+    MAX_WIDTH: '7xl', // Tailwind max-width class
+  },
+  NAVIGATION: {
+    POSITION: {
+      RIGHT: 4, // Tailwind spacing units
+    },
+  },
+}
+
 // Data
 import portfolioData from '@/portfolio-data.json'
 const sections = portfolioData.sections
@@ -42,7 +65,7 @@ const sectionComponents = Object.fromEntries(
   ])
 )
 
-// Refs and state
+// Refs and state management
 const router = useRouter()
 const scrollContainer = ref(null)
 const currentSection = ref(sections[0].path)
@@ -50,12 +73,7 @@ const isNavigating = ref(false)
 const touchStartY = ref(0)
 const lastScrollTime = ref(Date.now())
 
-// Constants
-const SCROLL_COOLDOWN = 500 // ms between scroll actions
-const SCROLL_THRESHOLD = 50 // minimum pixels for swipe detection
-const ANIMATION_DURATION = 100 // ms for smooth scroll
-
-// Unified navigation function
+// Navigation handlers
 const navigateToSection = (targetPath, smooth = true) => {
   if (isNavigating.value) return
 
@@ -73,13 +91,12 @@ const navigateToSection = (targetPath, smooth = true) => {
   router.push({ path: `/${targetPath}` })
   updatePageTitle(targetPath)
 
-  // Reset navigation lock after animation
   setTimeout(() => {
     isNavigating.value = false
-  }, ANIMATION_DURATION)
+  }, CONFIG.SCROLL.ANIMATION_DURATION)
 }
 
-// Scroll handling
+// Scroll handlers
 const handleScroll = debounce(() => {
   if (isNavigating.value) return
 
@@ -92,9 +109,9 @@ const handleScroll = debounce(() => {
     router.push({ path: `/${newPath}` })
     updatePageTitle(newPath)
   }
-}, 50)
+}, CONFIG.SCROLL.DEBOUNCE)
 
-// Touch handling
+// Touch handlers
 const handleTouchStart = (e) => {
   touchStartY.value = e.touches[0].clientY
 }
@@ -107,7 +124,7 @@ const handleTouchEnd = (e) => {
   const touchEndY = e.changedTouches[0].clientY
   const deltaY = touchStartY.value - touchEndY
 
-  if (Math.abs(deltaY) < SCROLL_THRESHOLD) return
+  if (Math.abs(deltaY) < CONFIG.SCROLL.THRESHOLD) return
 
   const currentIndex = sections.findIndex(section => section.path === currentSection.value)
   const newIndex = deltaY > 0
@@ -117,10 +134,10 @@ const handleTouchEnd = (e) => {
   navigateToSection(sections[newIndex].path)
 }
 
-// Wheel handling
+// Wheel handler with improved throttling
 const handleWheel = debounce((e) => {
   const now = Date.now()
-  if (now - lastScrollTime.value < SCROLL_COOLDOWN) return
+  if (now - lastScrollTime.value < CONFIG.SCROLL.COOLDOWN) return
 
   const currentIndex = sections.findIndex(section => section.path === currentSection.value)
   const newIndex = e.deltaY > 0
@@ -129,45 +146,44 @@ const handleWheel = debounce((e) => {
 
   navigateToSection(sections[newIndex].path)
   lastScrollTime.value = now
-}, 50, { leading: true })
+}, CONFIG.SCROLL.DEBOUNCE, { leading: true })
 
-// Utilities
+// Utility functions
 const updatePageTitle = (path) => {
   const section = sections.find(s => s.path === path)
   if (section) {
-    document.title = section.pageTitle
+    document.title = `${section.pageTitle} | Portfolio`
   }
 }
 
-// Route handling
 const handleRouteChange = (to) => {
   const path = to.path.slice(1)
   if (!path || !sections.some(section => section.path === path)) return
   navigateToSection(path, true)
 }
 
-// Lifecycle
+// Lifecycle hooks
 onMounted(() => {
-  // Handle redirect from 404
-  const redirectFrom = sessionStorage.getItem('redirectFrom')
-  if (redirectFrom) {
-    sessionStorage.removeItem('redirectFrom')
-    router.push({
-      path: sections.some(s => s.path === redirectFrom)
-        ? `/${redirectFrom}`
-        : '/'
-    })
-  } else {
-    // Handle initial route
-    const initialPath = router.currentRoute.value.path
-    if (initialPath === '/') {
-      updatePageTitle(sections[0].path)
+  const handleInitialNavigation = () => {
+    const redirectFrom = sessionStorage.getItem('redirectFrom')
+    if (redirectFrom) {
+      sessionStorage.removeItem('redirectFrom')
+      router.push({
+        path: sections.some(s => s.path === redirectFrom)
+          ? `/${redirectFrom}`
+          : '/'
+      })
     } else {
-      handleRouteChange(router.currentRoute.value)
+      const initialPath = router.currentRoute.value.path
+      if (initialPath === '/') {
+        updatePageTitle(sections[0].path)
+      } else {
+        handleRouteChange(router.currentRoute.value)
+      }
     }
   }
 
-  // Setup route handling
+  handleInitialNavigation()
   router.afterEach(handleRouteChange)
 })
 </script>
