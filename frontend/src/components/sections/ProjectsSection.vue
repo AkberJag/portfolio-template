@@ -54,6 +54,7 @@ const responsiveOptions = ref([
     }
 ]);
 </script>
+
 <template>
     <div class="min-w-0 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-xl sm:text-2xl font-bold dark:text-white text-gray-900 mb-4 sm:mb-6 text-center">My

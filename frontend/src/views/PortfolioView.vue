@@ -1,22 +1,3 @@
-<template>
-  <div class="relative h-screen overflow-hidden bg-slate-100 dark:bg-gray-900 transition-colors duration-700">
-    <StarryBackground class="absolute inset-0" />
-    <!-- Main scroll container -->
-    <div ref="scrollContainer" @scroll="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove"
-      @touchend="handleTouchEnd" @wheel="handleWheel"
-      class="relative z-10 h-full overflow-y-auto snap-y snap-mandatory scroll-smooth">
-      <section v-for="section in sections" :key="section.path"
-        class="h-screen flex items-center justify-center snap-start">
-        <component :is="sectionComponents[section.component]" class="w-full max-w-7xl px-4 sm:px-6 lg:px-8" />
-      </section>
-    </div>
-    <!-- Navigation -->
-    <NavigationDots :sections="sections" :currentSection="currentSection" @navigate="navigateToSection"
-      class="fixed right-4 top-1/2 -translate-y-1/2 z-20" />
-    <SettingsButton class="z-20" />
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted, defineAsyncComponent, provide } from 'vue'
 import { useRouter } from 'vue-router'
@@ -187,3 +168,22 @@ onMounted(() => {
   router.afterEach(handleRouteChange)
 })
 </script>
+
+<template>
+  <div class="relative h-screen overflow-hidden bg-slate-100 dark:bg-gray-900 transition-colors duration-700">
+    <StarryBackground class="absolute inset-0" />
+    <!-- Main scroll container -->
+    <div ref="scrollContainer" @scroll="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove"
+      @touchend="handleTouchEnd" @wheel="handleWheel"
+      class="relative z-10 h-full overflow-y-auto snap-y snap-mandatory scroll-smooth">
+      <section v-for="section in sections" :key="section.path"
+        class="h-screen flex items-center justify-center snap-start">
+        <component :is="sectionComponents[section.component]" class="w-full max-w-7xl px-4 sm:px-6 lg:px-8" />
+      </section>
+    </div>
+    <!-- Navigation -->
+    <NavigationDots :sections="sections" :currentSection="currentSection" @navigate="navigateToSection"
+      class="fixed right-4 top-1/2 -translate-y-1/2 z-20" />
+    <SettingsButton class="z-20" />
+  </div>
+</template>

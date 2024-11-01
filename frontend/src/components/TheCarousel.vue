@@ -1,62 +1,3 @@
-<template>
-    <div class="relative w-full py-8">
-        <div class="w-full overflow-hidden">
-            <div class="flex transition-transform duration-300 ease-in-out"
-                :style="{ transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)` }">
-                <!-- Individual slides -->
-                <div v-for="(item, index) in items" :key="index" class="flex-shrink-0 px-2 transition-all duration-300"
-                    :style="{ width: `${100 / itemsPerView}%` }">
-                    <slot name="item" :data="item" :isActive="isItemVisible(index)">
-                        <!-- Default template -->
-                        <div
-                            class="h-full bg-white dark:bg-gray-800 rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl">
-                            <div class="p-4 h-full flex flex-col">
-                                <h3 class="text-lg font-semibold text-primary-900 dark:text-primary-100">
-                                    {{ item.title }}
-                                </h3>
-                                <p class="mt-2 text-primary-600 dark:text-primary-300">
-                                    {{ item.description }}
-                                </p>
-                            </div>
-                        </div>
-                    </slot>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation buttons -->
-        <div class="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none">
-            <button @click="prevSlide"
-                class="group pointer-events-auto flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 dark:bg-gray-800/80 dark:hover:bg-primary-900 -ml-4 transition-all duration-200"
-                :class="{ 'opacity-0': !showControls }" aria-label="Previous slide">
-                <ChevronLeft
-                    class="h-5 w-5 text-primary-600 transition-transform group-hover:-translate-x-0.5 dark:text-primary-300" />
-            </button>
-
-            <button @click="nextSlide"
-                class="group pointer-events-auto flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 dark:bg-gray-800/80 dark:hover:bg-primary-900 -mr-4 transition-all duration-200"
-                :class="{ 'opacity-0': !showControls }" aria-label="Next slide">
-                <ChevronRight
-                    class="h-5 w-5 text-primary-600 transition-transform group-hover:translate-x-0.5 dark:text-primary-300" />
-            </button>
-        </div>
-
-        <!-- Pagination dots -->
-        <div class="absolute bottom-0 left-0 right-0">
-            <div class="flex justify-center gap-2">
-                <button v-for="index in totalSlides" :key="index" @click="goToSlide(index - 1)"
-                    class="w-2 h-2 rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
-                    :class="[
-                        currentIndex === index - 1
-                            ? 'bg-primary-800 scale-125 dark:bg-primary-200'
-                            : 'bg-primary-300 hover:bg-primary-400 dark:bg-primary-600 dark:hover:bg-primary-500'
-                    ]" :aria-label="`Go to slide ${index}`"
-                    :aria-current="currentIndex === index - 1 ? 'true' : 'false'"></button>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
@@ -234,3 +175,62 @@ watch([itemsPerView, () => props.items], () => {
     }
 }, { deep: true });
 </script>
+
+<template>
+    <div class="relative w-full py-8">
+        <div class="w-full overflow-hidden">
+            <div class="flex transition-transform duration-300 ease-in-out"
+                :style="{ transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)` }">
+                <!-- Individual slides -->
+                <div v-for="(item, index) in items" :key="index" class="flex-shrink-0 px-2 transition-all duration-300"
+                    :style="{ width: `${100 / itemsPerView}%` }">
+                    <slot name="item" :data="item" :isActive="isItemVisible(index)">
+                        <!-- Default template -->
+                        <div
+                            class="h-full bg-white dark:bg-gray-800 rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl">
+                            <div class="p-4 h-full flex flex-col">
+                                <h3 class="text-lg font-semibold text-primary-900 dark:text-primary-100">
+                                    {{ item.title }}
+                                </h3>
+                                <p class="mt-2 text-primary-600 dark:text-primary-300">
+                                    {{ item.description }}
+                                </p>
+                            </div>
+                        </div>
+                    </slot>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none">
+            <button @click="prevSlide"
+                class="group pointer-events-auto flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 dark:bg-gray-800/80 dark:hover:bg-primary-900 -ml-4 transition-all duration-200"
+                :class="{ 'opacity-0': !showControls }" aria-label="Previous slide">
+                <ChevronLeft
+                    class="h-5 w-5 text-primary-600 transition-transform group-hover:-translate-x-0.5 dark:text-primary-300" />
+            </button>
+
+            <button @click="nextSlide"
+                class="group pointer-events-auto flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-white/80 shadow-md hover:bg-primary-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 dark:bg-gray-800/80 dark:hover:bg-primary-900 -mr-4 transition-all duration-200"
+                :class="{ 'opacity-0': !showControls }" aria-label="Next slide">
+                <ChevronRight
+                    class="h-5 w-5 text-primary-600 transition-transform group-hover:translate-x-0.5 dark:text-primary-300" />
+            </button>
+        </div>
+
+        <!-- Pagination dots -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <div class="flex justify-center gap-2">
+                <button v-for="index in totalSlides" :key="index" @click="goToSlide(index - 1)"
+                    class="w-2 h-2 rounded-full transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400"
+                    :class="[
+                        currentIndex === index - 1
+                            ? 'bg-primary-800 scale-125 dark:bg-primary-200'
+                            : 'bg-primary-300 hover:bg-primary-400 dark:bg-primary-600 dark:hover:bg-primary-500'
+                    ]" :aria-label="`Go to slide ${index}`"
+                    :aria-current="currentIndex === index - 1 ? 'true' : 'false'"></button>
+            </div>
+        </div>
+    </div>
+</template>

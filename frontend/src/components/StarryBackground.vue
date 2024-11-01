@@ -1,12 +1,3 @@
-<template>
-    <div class="absolute inset-0 overflow-hidden opacity-50 pointer-events-none">
-        <div v-for="star in stars" :key="star.id" class="absolute text-xs md:text-sm" :class="star.color"
-            :style="{ left: star.left, top: star.top, animation: `twinkle ${star.duration}s infinite` }">
-            {{ star.shape }}
-        </div>
-    </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
 
@@ -42,6 +33,15 @@ onMounted(() => {
     generateStars();
 });
 </script>
+
+<template>
+    <div class="absolute inset-0 overflow-hidden opacity-50 pointer-events-none">
+        <div v-for="star in stars" :key="star.id" class="absolute text-xs md:text-sm" :class="star.color"
+            :style="{ left: star.left, top: star.top, animation: `twinkle ${star.duration}s infinite` }">
+            {{ star.shape }}
+        </div>
+    </div>
+</template>
 
 <style>
 @keyframes twinkle {
