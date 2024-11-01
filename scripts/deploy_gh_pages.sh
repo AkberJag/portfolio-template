@@ -18,15 +18,12 @@
 # How to run this script:
 # 1. Ensure you're in the project root directory.
 # 2. Run the following command in the terminal:
-#    bash scripts/deploy_gh_pages.sh
+# bash scripts/deploy_gh_pages.sh
 #
-# This assumes the script is located in the `scripts/` folder. If it’s located elsewhere,
+# This assumes the script is located in the `scripts/` folder. If it's located elsewhere,
 # adjust the path accordingly when running the script.
 #
-
-
 set -e
-
 echo "🚀 Starting build and deployment process..."
 
 # Ensure we're in the project root
@@ -42,6 +39,13 @@ cd frontend
 if [ ! -f "package.json" ]; then
     echo "❌ Error: package.json not found in frontend directory"
     exit 1
+fi
+
+# Get version from package.json
+VERSION=$(node -p "require('./package.json').version")
+if [ -z "$VERSION" ]; then
+    echo "⚠️ Warning: Could not get version from package.json, using 'latest' instead"
+    VERSION="latest"
 fi
 
 # Install dependencies if node_modules doesn't exist
@@ -66,7 +70,7 @@ cd ..
 # Force add and commit the new build
 echo "📝 Committing the new build..."
 git add frontend/dist -f
-git commit -m "🚀 deploy: Deploy the latest version" || echo "No changes to commit"
+git commit -m "🚀 deploy: Deploy version ${VERSION}" || echo "No changes to commit"
 
 echo "📦 Publishing frontend/dist folder to gh-pages branch..."
 
@@ -85,4 +89,4 @@ fi
 echo "🔄 Pushing changes to remote..."
 git push origin $current_branch
 
-echo "✨ All done! Changes have been deployed to GitHub Pages and pushed to remote."
+echo "✨ All done! Version ${VERSION} has been deployed to GitHub Pages and pushed to remote."
