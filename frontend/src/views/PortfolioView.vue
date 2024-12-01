@@ -73,7 +73,7 @@ const navigateToSection = (targetPath, smooth = true) => {
 
   scrollContainer.value?.scrollTo(scrollOptions)
   currentSection.value = targetPath
-  router.push({ path: `/${targetPath}` })
+  router.replace({ path: `/${targetPath}` })
   updatePageTitle(targetPath)
 
   setTimeout(() => {
@@ -91,7 +91,7 @@ const handleScroll = debounce(() => {
 
   if (newPath && currentSection.value !== newPath) {
     currentSection.value = newPath
-    router.push({ path: `/${newPath}` })
+    router.replace({ path: `/${newPath}` })
     updatePageTitle(newPath)
   }
 }, CONFIG.SCROLL.DEBOUNCE)
@@ -153,7 +153,7 @@ onMounted(() => {
     const redirectFrom = sessionStorage.getItem('redirectFrom')
     if (redirectFrom) {
       sessionStorage.removeItem('redirectFrom')
-      router.push({
+      router.replace({
         path: sections.some(s => s.path === redirectFrom)
           ? `/${redirectFrom}`
           : '/'
