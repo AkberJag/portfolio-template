@@ -1,3 +1,5 @@
+<!-- todo: implement 'numScroll' -->
+
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next';

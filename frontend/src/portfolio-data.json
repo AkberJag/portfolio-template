@@ -13,6 +13,12 @@
       "pageTitle": "About Me | John Doe"
     },
     {
+      "name": "Licenses and Certifications",
+      "path": "licenses-and-certs",
+      "component": "LicensesCertifications",
+      "pageTitle": "Licenses and Certifications | John Doe"
+    },
+    {
       "name": "Projects",
       "path": "projects",
       "component": "ProjectsSection",
