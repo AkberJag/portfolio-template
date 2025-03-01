@@ -1,194 +1,216 @@
 <script setup>
-import { ref, onMounted, defineAsyncComponent, provide } from 'vue'
-import { useRouter } from 'vue-router'
-import { debounce } from 'lodash'
+import { provide, ref, defineAsyncComponent, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { useRouter } from 'vue-router'; // Import Vue Router for navigation
+import SettingsButton from '@/components/SettingsButton.vue';
+import StarryBackground from '@/components/StarryBackground.vue';
+import portfolioData from '@/portfolio-data.json'; // Import portfolio data
+import NavigationDots from '@/components/NavigationDots.vue';
 
-// Components
-import NavigationDots from '@/components/NavigationDots.vue'
-import SettingsButton from '@/components/SettingsButton.vue'
-import StarryBackground from '@/components/StarryBackground.vue'
+// Initialize Vue Router
+const router = useRouter();
 
-// Add scrollbar visibility state
-const showScrollbar = ref(false)
-provide('showScrollbar', showScrollbar) // Provide to child components
+// State for controlling scrollbar visibility
+const showScrollbar = ref(false);
+provide('showScrollbar', showScrollbar); // Provide scrollbar state to child components
 
-// Configuration constants
-const CONFIG = {
-  SCROLL: {
-    COOLDOWN: 500, // ms between scroll actions
-    THRESHOLD: 50, // minimum pixels for swipe detection
-    DEBOUNCE: 50, // ms for debounce delay
-    ANIMATION_DURATION: 100, // ms for smooth scroll
-  },
-  LAYOUT: {
-    Z_INDICES: {
-      BACKGROUND: 0,
-      CONTENT: 10,
-      NAVIGATION: 20,
-    },
-    MAX_WIDTH: '7xl', // Tailwind max-width class
-  },
-  NAVIGATION: {
-    POSITION: {
-      RIGHT: 4, // Tailwind spacing units
-    },
-  },
-}
+// Portfolio sections data
+const sections = portfolioData.sections;
+provide('sections', sections); // Provide sections data to child components
 
-// Data
-import portfolioData from '@/portfolio-data.json'
-const sections = portfolioData.sections
-provide('sections', sections)
+// Track the currently active section
+const activeSection = ref(0);
 
-// Dynamic imports for section components
-const sectionComponents = Object.fromEntries(
-  sections.map(section => [
-    section.component,
-    defineAsyncComponent(() =>
-      import(`@/components/sections/${section.component}.vue`)
-    )
-  ])
-)
+// Template ref for the scroll container
+const container = ref(null);
 
-// Refs and state management
-const router = useRouter()
-const scrollContainer = ref(null)
-const currentSection = ref(sections[0].path)
-const isNavigating = ref(false)
-const touchStartY = ref(0)
-const lastScrollTime = ref(Date.now())
+// Flag to prevent Intersection Observer from changing the section during initial load
+const initialLoadComplete = ref(false);
 
-// Navigation handlers
-const navigateToSection = (targetPath, smooth = true) => {
-  if (isNavigating.value) return
+// Reference to the Intersection Observer
+let observer = null;
 
-  const targetIndex = sections.findIndex(section => section.path === targetPath)
-  if (targetIndex === -1) return
-
-  isNavigating.value = true
-  const scrollOptions = {
-    top: targetIndex * window.innerHeight,
-    behavior: smooth ? 'smooth' : 'auto'
-  }
-
-  scrollContainer.value?.scrollTo(scrollOptions)
-  currentSection.value = targetPath
-  router.replace({ path: `/${targetPath}` })
-  updatePageTitle(targetPath)
-
-  setTimeout(() => {
-    isNavigating.value = false
-  }, CONFIG.SCROLL.ANIMATION_DURATION)
-}
-
-// Scroll handlers
-const handleScroll = debounce(() => {
-  if (isNavigating.value) return
-
-  const { scrollTop } = scrollContainer.value
-  const index = Math.round(scrollTop / window.innerHeight)
-  const newPath = sections[index]?.path
-
-  if (newPath && currentSection.value !== newPath) {
-    currentSection.value = newPath
-    router.replace({ path: `/${newPath}` })
-    updatePageTitle(newPath)
-  }
-}, CONFIG.SCROLL.DEBOUNCE)
-
-// Touch handlers
-const handleTouchStart = (e) => {
-  touchStartY.value = e.touches[0].clientY
-}
-
-const handleTouchMove = (e) => {
-  e.preventDefault()
-}
-
-const handleTouchEnd = (e) => {
-  const touchEndY = e.changedTouches[0].clientY
-  const deltaY = touchStartY.value - touchEndY
-
-  if (Math.abs(deltaY) < CONFIG.SCROLL.THRESHOLD) return
-
-  const currentIndex = sections.findIndex(section => section.path === currentSection.value)
-  const newIndex = deltaY > 0
-    ? Math.min(currentIndex + 1, sections.length - 1)
-    : Math.max(currentIndex - 1, 0)
-
-  navigateToSection(sections[newIndex].path)
-}
-
-// Wheel handler with improved throttling
-const handleWheel = debounce((e) => {
-  const now = Date.now()
-  if (now - lastScrollTime.value < CONFIG.SCROLL.COOLDOWN) return
-
-  const currentIndex = sections.findIndex(section => section.path === currentSection.value)
-  const newIndex = e.deltaY > 0
-    ? Math.min(currentIndex + 1, sections.length - 1)
-    : Math.max(currentIndex - 1, 0)
-
-  navigateToSection(sections[newIndex].path)
-  lastScrollTime.value = now
-}, CONFIG.SCROLL.DEBOUNCE, { leading: true })
-
-// Utility functions
-const updatePageTitle = (path) => {
-  const section = sections.find(s => s.path === path)
+// Updates the URL to reflect the current section without adding to browser history.
+const updateUrl = (index) => {
+  const section = sections[index];
   if (section) {
-    document.title = `${section.pageTitle}`
+    router.replace({ path: `/${section.path}` });
   }
-}
+};
 
-const handleRouteChange = (to) => {
-  const path = to.path.slice(1)
-  if (!path || !sections.some(section => section.path === path)) return
-  navigateToSection(path, true)
-}
 
-// Lifecycle hooks
-onMounted(() => {
-  const handleInitialNavigation = () => {
-    const redirectFrom = sessionStorage.getItem('redirectFrom')
-    if (redirectFrom) {
-      sessionStorage.removeItem('redirectFrom')
-      router.replace({
-        path: sections.some(s => s.path === redirectFrom)
-          ? `/${redirectFrom}`
-          : '/'
-      })
-    } else {
-      const initialPath = router.currentRoute.value.path
-      if (initialPath === '/') {
-        updatePageTitle(sections[0].path)
-      } else {
-        handleRouteChange(router.currentRoute.value)
+// Updates the document title based on the active section.
+const updateTitle = (title) => {
+  document.title = title;
+};
+
+/**
+ * Scrolls to a specific section by its index.
+ * @param {number} index - The index of the section to navigate to.
+ * @param {boolean} [smooth=true] - Whether to use smooth scrolling or instant jump
+ */
+const navigateToSection = (index, smooth = true) => {
+  // Ensure container is available
+  if (!container.value) {
+    console.warn('Container not available for navigation');
+    return;
+  }
+
+  const sectionElements = container.value.querySelectorAll('.snap-start');
+
+  if (!sectionElements || sectionElements.length === 0) {
+    console.warn('No section elements found for navigation');
+    return;
+  }
+
+  if (sectionElements[index]) {
+    // Scroll to the section with optional smooth behavior
+    sectionElements[index].scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
+
+    // Update the URL to reflect the current section
+    updateUrl(index);
+
+    // Update active section state
+    activeSection.value = index;
+
+    // Update the document title
+    if (sections[index]) {
+      updateTitle(sections[index].pageTitle);
+    }
+  } else {
+    console.warn(`Section at index ${index} not found`);
+  }
+};
+
+// Watch for URL changes and navigate to the corresponding section
+watch(
+  () => router.currentRoute.value.path,
+  (newPath) => {
+    if (initialLoadComplete.value) {
+      const path = newPath.substring(1); // Remove leading slash
+      const sectionIndex = sections.findIndex((section) => section.path === path);
+
+      if (sectionIndex !== -1 && sectionIndex !== activeSection.value) {
+        navigateToSection(sectionIndex);
       }
     }
   }
+);
 
-  handleInitialNavigation()
-  router.afterEach(handleRouteChange)
-})
+// Dynamically import section components based on the portfolio data
+const sectionComponents = Object.fromEntries(
+  sections.map((section) => [
+    section.component,
+    defineAsyncComponent(() =>
+      import(`@/components/sections/${section.component}.vue`)
+    ),
+  ])
+);
+
+// Setup Intersection Observer to track active sections
+onMounted(() => {
+  // Use a longer delay to ensure all dynamic components are properly loaded and rendered
+  setTimeout(() => {
+    const sectionElements = container.value.querySelectorAll('.snap-start');
+
+    if (!sectionElements || sectionElements.length === 0) {
+      console.warn('No section elements found. Components may not be fully rendered yet.');
+      return;
+    }
+
+    // Check the current URL on page load and navigate to the corresponding section
+    const initialPath = router.currentRoute.value.path.substring(1); // Remove leading slash
+    const initialSectionIndex = sections.findIndex(
+      (section) => section.path === initialPath
+    );
+
+    // Initialize section based on URL or default to first section
+    if (initialSectionIndex !== -1) {
+      // For direct URL navigation, use native scrollIntoView for more reliable scrolling
+      const targetElement = sectionElements[initialSectionIndex];
+      if (targetElement) {
+        // First update the active section
+        activeSection.value = initialSectionIndex;
+
+        // Update the document title
+        if (sections[initialSectionIndex]) {
+          updateTitle(sections[initialSectionIndex].pageTitle);
+        }
+
+        // Force scroll to element
+        targetElement.scrollIntoView({ behavior: 'auto' });
+      } else {
+        navigateToSection(0);
+      }
+    } else {
+      // Default to the first section if no path match is found
+      navigateToSection(0);
+    }
+
+    // Mark initial load as complete after navigation
+    setTimeout(() => {
+      initialLoadComplete.value = true;
+    }, 200); // Longer delay to ensure scrolling has completed
+
+    // Create an Intersection Observer to detect when sections become active
+    observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && initialLoadComplete.value) {
+            const index = Array.from(sectionElements).indexOf(entry.target);
+            if (activeSection.value !== index) {
+              activeSection.value = index; // Update the active section
+              updateUrl(index); // Update the URL to reflect the active section
+
+              // Update the document title when section changes
+              if (sections[index]) {
+                updateTitle(sections[index].pageTitle);
+              }
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Trigger when 50% of the section is visible
+        root: container.value, // Use the container as the root for the observer
+      }
+    );
+
+    // Observe each section element
+    sectionElements.forEach((el) => observer.observe(el));
+  });
+});
+
+// Cleanup the observer when the component is unmounted
+onBeforeUnmount(() => {
+  if (observer) {
+    observer.disconnect();
+  }
+});
 </script>
 
+
 <template>
-  <div class="relative h-screen overflow-hidden bg-slate-100 dark:bg-gray-900 transition-colors duration-700">
-    <StarryBackground class="absolute inset-0" />
-    <!-- Main scroll container with dynamic scrollbar classes -->
-    <div ref="scrollContainer" @scroll="handleScroll" @touchstart="handleTouchStart" @touchmove="handleTouchMove"
-      @touchend="handleTouchEnd" @wheel="handleWheel" :class="[
-        'relative z-10 h-full overflow-y-auto snap-y snap-mandatory scroll-smooth',
-        showScrollbar ? 'scrollbar-visible' : 'scrollbar-hidden'
-      ]">
-      <section v-for="section in sections" :key="section.path"
-        class="h-screen flex items-center justify-center snap-start">
-        <component :is="sectionComponents[section.component]" class="w-full max-w-7xl px-4 sm:px-6 lg:px-8" />
-      </section>
+  <!-- Scroll container with snap behavior -->
+  <div ref="container"
+    class="w-full h-screen overflow-y-scroll snap-y snap-mandatory bg-slate-100 dark:bg-gray-900 transition-colors duration-700"
+    :class="showScrollbar ? 'scrollbar-visible' : 'scrollbar-hidden'">
+    <!-- Starry background component -->
+    <StarryBackground />
+
+    <!-- Render each section dynamically -->
+    <div v-for="(section, index) in sections" :key="index" class="w-full h-screen flex flex-col snap-start"
+      :id="section.path">
+      <div class="flex-grow overflow-y-auto">
+        <!-- Dynamically load the section component -->
+        <component :is="sectionComponents[section.component]" :section="section" />
+      </div>
     </div>
-    <NavigationDots :sections="sections" :currentSection="currentSection" @navigate="navigateToSection"
+
+    <!-- Navigation dots for section navigation -->
+    <NavigationDots :sections="sections" :activeSection="activeSection" @navigate="navigateToSection"
       class="fixed right-4 top-1/2 -translate-y-1/2 z-20" />
+
+    <!-- Settings button -->
     <SettingsButton class="z-20" />
   </div>
 </template>
