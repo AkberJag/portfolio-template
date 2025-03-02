@@ -14,7 +14,7 @@ const { t: authT } = useFeatureTranslations('example')
     <LanguageSwitcher />
 
     <!-- common -->
-    <h1>{{ t('greeting') }}</h1>
+    <h1>{{ t('sections.home.greeting') }}</h1>
 
     <!-- feature specific -->
     <button>{{ t('example.hello') }}</button>
