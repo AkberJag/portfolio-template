@@ -1,3 +1,49 @@
 {
-  "greeting": "Bonjour ! de common"
+  "aria": {
+    "selectTheme": "Sélectionner le thème {theme}",
+    "selectColor": "Sélectionner la couleur d'accent {color}",
+    "navigateToSection": "Naviguer vers {section}"
+  },
+  "settings": {
+    "theme": {
+      "label": "Thème",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système ({theme})"
+    },
+    "accentColor": {
+      "label": "Couleur d'accent",
+      "emerald": "Émeraude",
+      "green": "Vert",
+      "lime": "Citron vert",
+      "red": "Rouge",
+      "orange": "Orange",
+      "amber": "Ambre",
+      "yellow": "Jaune",
+      "teal": "Sarcelle",
+      "cyan": "Cyan",
+      "sky": "Ciel",
+      "blue": "Bleu",
+      "indigo": "Indigo",
+      "violet": "Violet",
+      "purple": "Pourpre",
+      "fuchsia": "Fuchsia",
+      "pink": "Rose",
+      "rose": "Rose vif",
+      "slate": "Ardoise",
+      "gray": "Gris",
+      "zinc": "Zinc",
+      "neutral": "Neutre",
+      "stone": "Pierre"
+    },
+    "showScrollbar": {
+      "label": "Afficher la barre de défilement"
+    },
+    "language": {
+      "label": "Langue"
+    },
+    "customize": {
+      "label": "Personnalisez votre expérience"
+    }
+  }
 }
