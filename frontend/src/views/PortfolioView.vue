@@ -1,13 +1,14 @@
 <script setup>
-import { provide, ref, defineAsyncComponent, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
-import { useRouter } from 'vue-router'; // Import Vue Router for navigation
+import { provide, ref, defineAsyncComponent, onMounted, onBeforeUnmount, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import SettingsButton from '@/components/SettingsButton.vue';
 import StarryBackground from '@/components/StarryBackground.vue';
-import portfolioData from '@/portfolio-data.json'; // Import portfolio data
+import portfolioData from '@/portfolio-data.json';
 import NavigationDots from '@/components/NavigationDots.vue';
 
-// Initialize Vue Router
+// Initialize Vue Router and Route
 const router = useRouter();
+const route = useRoute(); // Add this to access route params
 
 // State for controlling scrollbar visibility
 const showScrollbar = ref(false);
@@ -33,10 +34,11 @@ let observer = null;
 const updateUrl = (index) => {
   const section = sections[index];
   if (section) {
-    router.replace({ path: `/${section.path}` });
+    // Preserve the language parameter when updating the URL
+    const lang = route.params.lang || 'en';
+    router.replace({ path: `/${lang}/${section.path}` });
   }
 };
-
 
 // Updates the document title based on the active section.
 const updateTitle = (title) => {
@@ -81,13 +83,12 @@ const navigateToSection = (index, smooth = true) => {
   }
 };
 
-// Watch for URL changes and navigate to the corresponding section
+// Watch for section parameter changes in the URL
 watch(
-  () => router.currentRoute.value.path,
-  (newPath) => {
-    if (initialLoadComplete.value) {
-      const path = newPath.substring(1); // Remove leading slash
-      const sectionIndex = sections.findIndex((section) => section.path === path);
+  () => route.params.section,
+  (newSection) => {
+    if (initialLoadComplete.value && newSection) {
+      const sectionIndex = sections.findIndex((section) => section.path === newSection);
 
       if (sectionIndex !== -1 && sectionIndex !== activeSection.value) {
         navigateToSection(sectionIndex);
@@ -117,11 +118,11 @@ onMounted(() => {
       return;
     }
 
-    // Check the current URL on page load and navigate to the corresponding section
-    const initialPath = router.currentRoute.value.path.substring(1); // Remove leading slash
-    const initialSectionIndex = sections.findIndex(
-      (section) => section.path === initialPath
-    );
+    // Check the current URL section parameter on page load
+    const initialSection = route.params.section;
+    const initialSectionIndex = initialSection
+      ? sections.findIndex((section) => section.path === initialSection)
+      : 0; // Default to first section if no section is specified
 
     // Initialize section based on URL or default to first section
     if (initialSectionIndex !== -1) {
