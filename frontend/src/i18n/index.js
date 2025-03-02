@@ -4,7 +4,6 @@ import languages from './languages.json'
 // Common translations
 const commonTranslations = {}
 const commonModules = import.meta.glob('./locales/*.json', { eager: true })
-
 for (const path in commonModules) {
   const locale = path.split('/').pop().split('.')[0]
   commonTranslations[locale] = commonModules[path].default
@@ -23,8 +22,29 @@ const i18n = createI18n({
   fallbackWarn: process.env.NODE_ENV === 'development',
 })
 
-// Attach load states to i18n instance
+// Track loading states and cache paths
 i18n.featureLoadStates = new Map()
+i18n.modulePaths = new Map()
+
+// glob pattern for nested locales
+const featureModules = import.meta.glob('../features/**/locales/*.json')
+
+// Map module paths for faster lookup
+Object.keys(featureModules).forEach(path => {
+  const pathParts = path.split('/')
+  const locale = pathParts.pop().split('.')[0]
+
+  // Extract feature path from the full path
+  const featureParts = pathParts.slice(
+    pathParts.indexOf('features') + 1,
+    pathParts.indexOf('locales'),
+  )
+  const feature = featureParts.join('/')
+
+  // Create an index for efficient lookups
+  const key = `${feature}/${locale}`
+  i18n.modulePaths.set(key, path)
+})
 
 i18n.loadFeatureMessages = async function (
   feature,
@@ -32,27 +52,38 @@ i18n.loadFeatureMessages = async function (
 ) {
   const featureKey = `${feature}-${locale}`
 
+  // Check if already loaded or loading
   if (this.featureLoadStates.has(featureKey)) {
-    return this.featureLoadStates.get(featureKey)
+    const state = this.featureLoadStates.get(featureKey)
+    if (state === 'loaded') return true
+    return state // Return promise if loading
   }
 
   const loadPromise = (async () => {
     try {
-      const messages = await import(
-        /* webpackChunkName: "locale-[request]" */
-        `../features/${feature}/locales/${locale}.json`
-      )
+      // Find module path using the pre-computed index
+      const modulePath = this.modulePaths.get(`${feature}/${locale}`)
 
+      if (!modulePath) {
+        console.warn(`Translation file not found: ${feature}/${locale}`)
+        this.featureLoadStates.set(featureKey, 'missing')
+        return false
+      }
+
+      // Load the module
+      const module = await featureModules[modulePath]()
+
+      // Merge the loaded messages
       this.global.mergeLocaleMessage(locale, {
-        [feature]: messages.default,
+        [feature]: module.default,
       })
 
       this.featureLoadStates.set(featureKey, 'loaded')
       return true
     } catch (error) {
       console.error(`Failed loading ${feature}/${locale}:`, error)
-      this.featureLoadStates.delete(featureKey)
-      throw error
+      this.featureLoadStates.set(featureKey, 'error')
+      return false
     }
   })()
 
@@ -60,15 +91,37 @@ i18n.loadFeatureMessages = async function (
   return loadPromise
 }
 
-const originalMissingHandler = i18n.global.missing
+// Implement debouncing for missing handler to prevent request flooding
+let pendingAutoloads = new Set()
+let autoloadTimer = null
 
+const processPendingAutoloads = () => {
+  const toProcess = [...pendingAutoloads]
+  pendingAutoloads.clear()
+
+  toProcess.forEach(({ feature, locale }) => {
+    if (!i18n.featureLoadStates.has(`${feature}-${locale}`)) {
+      i18n.loadFeatureMessages(feature, locale)
+    }
+  })
+}
+
+const originalMissingHandler = i18n.global.missing
 i18n.global.missing = function (locale, key, ...args) {
   const [feature] = key.split('.')
   const featureKey = `${feature}-${locale}`
 
   if (!i18n.featureLoadStates.has(featureKey)) {
-    console.warn(`Attempting auto-load for ${featureKey}`)
-    i18n.loadFeatureMessages(feature, locale)
+    // Add to pending batch instead of immediate loading
+    pendingAutoloads.add({ feature, locale })
+
+    // Process batch after short delay
+    if (!autoloadTimer) {
+      autoloadTimer = setTimeout(() => {
+        processPendingAutoloads()
+        autoloadTimer = null
+      }, 50) // 50ms batch window
+    }
   }
 
   // Call original handler to show warnings
