@@ -1,40 +1,40 @@
 <script setup>
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Carousel from '../TheCarousel.vue';
 
+const { t } = useI18n();
 
 const data = [
   {
-    "title": "Project 1",
-    "description": "A Vue.js web application for task management.",
-    "link": "#",
+    "id": "project1",
     "technologies": ["Vue.js", "Vuex", "Tailwind CSS", "Firebase"]
   },
   {
-    "title": "Project 2",
-    "description": "An e-commerce platform built with Vue and Node.js.",
-    "link": "#",
+    "id": "project2",
     "technologies": ["Vue.js", "Node.js", "Express", "MongoDB"]
   },
   {
-    "title": "Project 3",
-    "description": "A responsive portfolio website using Vue and Tailwind CSS.",
-    "link": "#",
+    "id": "project3",
     "technologies": ["Vue.js", "Tailwind CSS", "Vite"]
   },
   {
-    "title": "Project 4",
-    "description": "A real-time chat application with Vue and Firebase.",
-    "link": "#",
+    "id": "project4",
     "technologies": ["Vue.js", "Firebase", "Vuex", "Vue Router"]
   },
   {
-    "title": "Project 5",
-    "description": "Another real-time chat application with Vue and Firebase.",
-    "link": "#",
+    "id": "project5",
     "technologies": ["Vue.js", "Firebase", "Vuex", "Vue Router"]
   }
-]
+];
+
+// Add translated properties to each project
+const projectsWithTranslations = data.map(project => ({
+  ...project,
+  title: t(`sections.projects.items.${project.id}.title`),
+  description: t(`sections.projects.items.${project.id}.description`),
+  link: "#",
+}));
 
 const responsiveOptions = ref([
   {
@@ -59,11 +59,12 @@ const responsiveOptions = ref([
   <!--  flex container to center the section vertically -->
   <div class="flex items-center justify-center min-h-screen">
     <div class="min-w-0 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-xl sm:text-2xl font-bold dark:text-white text-gray-900 mb-4 sm:mb-6 text-center">My
-        Projects</h2>
+      <h2 class="text-xl sm:text-2xl font-bold dark:text-white text-gray-900 mb-4 sm:mb-6 text-center">
+        {{ t('sections.projects.heading') }}
+      </h2>
 
       <!-- Mobile Carousel: One item visible -->
-      <Carousel v-if="data.length > 2" :items="data" :numVisible="1" :numScroll="1" circular
+      <Carousel v-if="projectsWithTranslations.length > 2" :items="projectsWithTranslations" :numVisible="1" :numScroll="1" circular
         :responsiveOptions="responsiveOptions" class="pb-6 sm:hidden">
         <template #item="slotProps">
           <div class="p-1 h-full">
@@ -83,7 +84,7 @@ const responsiveOptions = ref([
                 </div>
                 <a :href="slotProps.data.link" target="_blank" rel="noopener noreferrer"
                   class="text-blue-500 hover:underline text-xs inline-block">
-                  View Project
+                  {{ t('sections.projects.viewButton') }}
                 </a>
               </div>
             </div>
@@ -92,7 +93,7 @@ const responsiveOptions = ref([
       </Carousel>
 
       <!-- Tablet Carousel: Two items visible -->
-      <Carousel v-if="data.length > 2" :items="data" :numVisible="2" :numScroll="1" circular
+      <Carousel v-if="projectsWithTranslations.length > 2" :items="projectsWithTranslations" :numVisible="2" :numScroll="1" circular
         :responsiveOptions="responsiveOptions" class="pb-6 hidden sm:block lg:hidden">
         <template #item="slotProps">
           <div class="p-2 h-full">
@@ -112,7 +113,7 @@ const responsiveOptions = ref([
                 </div>
                 <a :href="slotProps.data.link" target="_blank" rel="noopener noreferrer"
                   class="text-blue-500 hover:underline text-sm inline-block">
-                  View Project
+                  {{ t('sections.projects.viewButton') }}
                 </a>
               </div>
             </div>
@@ -121,7 +122,7 @@ const responsiveOptions = ref([
       </Carousel>
 
       <!-- Desktop Carousel: Three items visible -->
-      <Carousel v-if="data.length > 2" :items="data" :numVisible="3" :numScroll="1" circular
+      <Carousel v-if="projectsWithTranslations.length > 2" :items="projectsWithTranslations" :numVisible="3" :numScroll="1" circular
         :responsiveOptions="responsiveOptions" class="pb-6 hidden lg:block">
         <template #item="slotProps">
           <div class="p-2 h-full">
@@ -141,7 +142,7 @@ const responsiveOptions = ref([
                 </div>
                 <a :href="slotProps.data.link" target="_blank" rel="noopener noreferrer"
                   class="text-blue-500 hover:underline text-sm md:text-base inline-block">
-                  View Project
+                  {{ t('sections.projects.viewButton') }}
                 </a>
               </div>
             </div>
@@ -151,7 +152,7 @@ const responsiveOptions = ref([
 
       <!-- Grid view for when less than 2 projects -->
       <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="project in data" :key="project.title"
+        <div v-for="project in projectsWithTranslations" :key="project.id"
           class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 flex flex-col h-full">
           <h3 class="text-base sm:text-lg font-semibold mb-2 text-gray-900 dark:text-white">
             {{ project.title }}
@@ -166,7 +167,7 @@ const responsiveOptions = ref([
             </div>
             <a :href="project.link" target="_blank" rel="noopener noreferrer"
               class="text-blue-500 hover:underline text-xs sm:text-sm">
-              View Project
+              {{ t('sections.projects.viewButton') }}
             </a>
           </div>
         </div>
