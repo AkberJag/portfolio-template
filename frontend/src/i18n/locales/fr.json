@@ -7,7 +7,7 @@
   "sections": {
     "home": {
       "name": "Accueil",
-      "pageTitle": "John Doe | Développeur & Designer Web",
+      "pageTitle": "John Doe {'|'} Développeur & Designer Web",
       "greeting": "Salut!",
       "personName": "John Doe",
       "secondaryName": "VU3CXF",
@@ -18,13 +18,13 @@
     },
     "about": {
       "name": "À propos",
-      "pageTitle": "À propos de moi | John Doe",
+      "pageTitle": "À propos de moi {'|'} John Doe",
       "heading": "À propos de moi",
       "description": "Un modèle de site portfolio entièrement personnalisable créé avec Vue.js, Tailwind CSS, PrimeVue 4 et Lucide Icons. Modifiez facilement la mise en page, ajoutez ou supprimez des sections et présentez votre travail dans un format moderne et responsive. Ce projet est parfait pour les développeurs, les designers ou toute personne à la recherche d'un portfolio en ligne propre et personnalisable. Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, voluptatibus ullam? Iste quos, atque nam exercitationem veritatis distinctio inventore enim sunt sint doloremque, sapiente modi autem fuga quis, perferendis placeat. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia, voluptas commodi. Cupiditate quas, accusantium quibusdam officiis, eligendi necessitatibus iste a eius hic quasi error sequi atque animi amet voluptatum iure."
     },
     "licensesAndCerts": {
       "name": "Licences et Certifications",
-      "pageTitle": "Licences et Certifications | John Doe",
+      "pageTitle": "Licences et Certifications {'|'} John Doe",
       "heading": "Licences et Certifications",
       "additionalHeading": "Certifications Supplémentaires",
       "verifyButton": "Vérifier la Certification",
@@ -74,7 +74,7 @@
     },
     "projects": {
       "name": "Projets",
-      "pageTitle": "Projets | John Doe",
+      "pageTitle": "Projets {'|'} John Doe",
       "heading": "Mes Projets",
       "viewButton": "Voir le Projet",
       "items": {
@@ -102,7 +102,7 @@
     },
     "contact": {
       "name": "Contact",
-      "pageTitle": "Me Contacter | John Doe",
+      "pageTitle": "Me Contacter {'|'} John Doe",
       "heading": "Me Contacter",
       "description": "N'hésitez pas à me contacter par email ou à me retrouver sur les réseaux sociaux !",
       "emailButton": "M'envoyer un email",

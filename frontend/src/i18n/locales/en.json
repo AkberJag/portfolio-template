@@ -7,7 +7,7 @@
   "sections": {
     "home": {
       "name": "Home",
-      "pageTitle": "John Doe | Web Developer & Designer",
+      "pageTitle": "John Doe {'|'} Web Developer & Designer",
       "greeting": "Hey there!",
       "personName": "John Doe",
       "secondaryName": "VU3CXF",
@@ -18,13 +18,13 @@
     },
     "about": {
       "name": "About",
-      "pageTitle": "About Me | John Doe",
+      "pageTitle": "About Me {'|'} John Doe",
       "heading": "About Me",
       "description": "A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio. Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, voluptatibus ullam? Iste quos, atque nam exercitationem veritatis distinctio inventore enim sunt sint doloremque, sapiente modi autem fuga quis, perferendis placeat. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia, voluptas commodi. Cupiditate quas, accusantium quibusdam officiis, eligendi necessitatibus iste a eius hic quasi error sequi atque animi amet voluptatum iure."
     },
     "licensesAndCerts": {
       "name": "Licenses and Certifications",
-      "pageTitle": "Licenses and Certifications | John Doe",
+      "pageTitle": "Licenses and Certifications {'|'} John Doe",
       "heading": "Licenses and Certifications",
       "additionalHeading": "Additional Certifications",
       "verifyButton": "Verify Certification",
@@ -74,7 +74,7 @@
     },
     "projects": {
       "name": "Projects",
-      "pageTitle": "Projects | John Doe",
+      "pageTitle": "Projects {'|'} John Doe",
       "heading": "My Projects",
       "viewButton": "View Project",
       "items": {
@@ -102,7 +102,7 @@
     },
     "contact": {
       "name": "Contact",
-      "pageTitle": "Contact Me | John Doe",
+      "pageTitle": "Contact Me {'|'} John Doe",
       "heading": "Contact Me",
       "description": "Feel free to reach out to me via email or connect on social media!",
       "emailButton": "Send me an email",
