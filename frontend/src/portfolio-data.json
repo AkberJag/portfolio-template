@@ -1,34 +1,34 @@
 {
   "sections": [
     {
-      "name": "Home",
+      "key": "home",
       "path": "home",
       "component": "HomeSection",
-      "pageTitle": "John Doe | Web Developer & Designer"
+      "translationKey": "sections.home"
     },
     {
-      "name": "About",
+      "key": "about",
       "path": "about",
       "component": "AboutSection",
-      "pageTitle": "About Me | John Doe"
+      "translationKey": "sections.about"
     },
     {
-      "name": "Licenses and Certifications",
+      "key": "licensesAndCerts",
       "path": "licenses-and-certs",
       "component": "LicensesCertifications",
-      "pageTitle": "Licenses and Certifications | John Doe"
+      "translationKey": "sections.licensesAndCerts"
     },
     {
-      "name": "Projects",
+      "key": "projects",
       "path": "projects",
       "component": "ProjectsSection",
-      "pageTitle": "Projects | John Doe"
+      "translationKey": "sections.projects"
     },
     {
-      "name": "Contact",
+      "key": "contact",
       "path": "contacts",
       "component": "ContactSection",
-      "pageTitle": "Contact Me | John Doe"
+      "translationKey": "sections.contact"
     }
   ]
 }
