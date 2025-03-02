@@ -4,6 +4,115 @@
     "selectColor": "Select {color} accent color",
     "navigateToSection": "Navigate to {section}"
   },
+  "sections": {
+    "home": {
+      "name": "Home",
+      "pageTitle": "John Doe | Web Developer & Designer",
+      "greeting": "Hey there!",
+      "personName": "John Doe",
+      "secondaryName": "VU3CXF",
+      "title": "Web Developer & Designer",
+      "subtitle": "Ham Radio Enthusiast",
+      "itsMe": "It's me",
+      "getInTouch": "Get in Touch"
+    },
+    "about": {
+      "name": "About",
+      "pageTitle": "About Me | John Doe",
+      "heading": "About Me",
+      "description": "A fully customizable portfolio website template built using Vue.js, Tailwind CSS, PrimeVue 4, and Lucide Icons. Easily modify the layout, add or remove sections, and showcase your work in a modern, responsive format. This project is perfect for developers, designers, or anyone looking for a clean and customizable online portfolio. Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, voluptatibus ullam? Iste quos, atque nam exercitationem veritatis distinctio inventore enim sunt sint doloremque, sapiente modi autem fuga quis, perferendis placeat. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia, voluptas commodi. Cupiditate quas, accusantium quibusdam officiis, eligendi necessitatibus iste a eius hic quasi error sequi atque animi amet voluptatum iure."
+    },
+    "licensesAndCerts": {
+      "name": "Licenses and Certifications",
+      "pageTitle": "Licenses and Certifications | John Doe",
+      "heading": "Licenses and Certifications",
+      "additionalHeading": "Additional Certifications",
+      "verifyButton": "Verify Certification",
+      "featured": {
+        "aws_cfl": {
+          "title": "AWS Cloud Practitioner",
+          "alt": "AWS Cloud Practitioner Certification Badge",
+          "details": "Validates overall understanding of the AWS Cloud"
+        },
+        "aws_da": {
+          "title": "AWS Certified Developer - Associate",
+          "alt": "AWS Developer Associate Certification Badge",
+          "details": "Design, develop, and manage robust, secure, scalable, highly available, and dynamic solutions to drive business objectives"
+        },
+        "radio": {
+          "title": "Amateur Wireless Station license",
+          "alt": "Amateur Radio License Badge",
+          "details": "Licensed amateur radio operator with expertise in wireless communications"
+        }
+      },
+      "other": {
+        "react": {
+          "title": "React Developer",
+          "alt": "React Developer Certification"
+        },
+        "vue": {
+          "title": "Vue.js Developer",
+          "alt": "Vue.js Developer Certification"
+        },
+        "typescript": {
+          "title": "TypeScript",
+          "alt": "TypeScript Certification"
+        },
+        "nodejs": {
+          "title": "Node.js",
+          "alt": "Node.js Developer Certification"
+        },
+        "mongodb": {
+          "title": "MongoDB",
+          "alt": "MongoDB Certification"
+        },
+        "docker": {
+          "title": "Docker",
+          "alt": "Docker Certification"
+        }
+      }
+    },
+    "projects": {
+      "name": "Projects",
+      "pageTitle": "Projects | John Doe",
+      "heading": "My Projects",
+      "viewButton": "View Project",
+      "items": {
+        "project1": {
+          "title": "Project 1",
+          "description": "A Vue.js web application for task management."
+        },
+        "project2": {
+          "title": "Project 2",
+          "description": "An e-commerce platform built with Vue and Node.js."
+        },
+        "project3": {
+          "title": "Project 3",
+          "description": "A responsive portfolio website using Vue and Tailwind CSS."
+        },
+        "project4": {
+          "title": "Project 4",
+          "description": "A real-time chat application with Vue and Firebase."
+        },
+        "project5": {
+          "title": "Project 5",
+          "description": "Another real-time chat application with Vue and Firebase."
+        }
+      }
+    },
+    "contact": {
+      "name": "Contact",
+      "pageTitle": "Contact Me | John Doe",
+      "heading": "Contact Me",
+      "description": "Feel free to reach out to me via email or connect on social media!",
+      "emailButton": "Send me an email",
+      "socialNames": {
+        "linkedin": "LinkedIn",
+        "github": "GitHub",
+        "instagram": "Instagram"
+      }
+    }
+  },
   "settings": {
     "theme": {
       "label": "Theme",

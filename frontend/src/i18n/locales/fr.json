@@ -1,8 +1,117 @@
 {
   "aria": {
     "selectTheme": "Sélectionner le thème {theme}",
-    "selectColor": "Sélectionner la couleur d'accent {color}",
+    "selectColor": "Sélectionner la couleur d'accentuation {color}",
     "navigateToSection": "Naviguer vers {section}"
+  },
+  "sections": {
+    "home": {
+      "name": "Accueil",
+      "pageTitle": "John Doe | Développeur & Designer Web",
+      "greeting": "Salut!",
+      "personName": "John Doe",
+      "secondaryName": "VU3CXF",
+      "title": "Développeur & Designer Web",
+      "subtitle": "Passionné de Radio Amateur",
+      "itsMe": "C'est moi",
+      "getInTouch": "Me Contacter"
+    },
+    "about": {
+      "name": "À propos",
+      "pageTitle": "À propos de moi | John Doe",
+      "heading": "À propos de moi",
+      "description": "Un modèle de site portfolio entièrement personnalisable créé avec Vue.js, Tailwind CSS, PrimeVue 4 et Lucide Icons. Modifiez facilement la mise en page, ajoutez ou supprimez des sections et présentez votre travail dans un format moderne et responsive. Ce projet est parfait pour les développeurs, les designers ou toute personne à la recherche d'un portfolio en ligne propre et personnalisable. Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, voluptatibus ullam? Iste quos, atque nam exercitationem veritatis distinctio inventore enim sunt sint doloremque, sapiente modi autem fuga quis, perferendis placeat. Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia, voluptas commodi. Cupiditate quas, accusantium quibusdam officiis, eligendi necessitatibus iste a eius hic quasi error sequi atque animi amet voluptatum iure."
+    },
+    "licensesAndCerts": {
+      "name": "Licences et Certifications",
+      "pageTitle": "Licences et Certifications | John Doe",
+      "heading": "Licences et Certifications",
+      "additionalHeading": "Certifications Supplémentaires",
+      "verifyButton": "Vérifier la Certification",
+      "featured": {
+        "aws_cfl": {
+          "title": "AWS Cloud Practitioner",
+          "alt": "Badge de Certification AWS Cloud Practitioner",
+          "details": "Valide la compréhension globale du Cloud AWS"
+        },
+        "aws_da": {
+          "title": "AWS Certified Developer - Associate",
+          "alt": "Badge de Certification AWS Developer Associate",
+          "details": "Concevoir, développer et gérer des solutions robustes, sécurisées, évolutives, hautement disponibles et dynamiques pour atteindre les objectifs commerciaux"
+        },
+        "radio": {
+          "title": "Licence de Station Sans Fil Amateur",
+          "alt": "Badge de Licence Radio Amateur",
+          "details": "Opérateur radio amateur licencié avec expertise en communications sans fil"
+        }
+      },
+      "other": {
+        "react": {
+          "title": "Développeur React",
+          "alt": "Certification Développeur React"
+        },
+        "vue": {
+          "title": "Développeur Vue.js",
+          "alt": "Certification Développeur Vue.js"
+        },
+        "typescript": {
+          "title": "TypeScript",
+          "alt": "Certification TypeScript"
+        },
+        "nodejs": {
+          "title": "Node.js",
+          "alt": "Certification Développeur Node.js"
+        },
+        "mongodb": {
+          "title": "MongoDB",
+          "alt": "Certification MongoDB"
+        },
+        "docker": {
+          "title": "Docker",
+          "alt": "Certification Docker"
+        }
+      }
+    },
+    "projects": {
+      "name": "Projets",
+      "pageTitle": "Projets | John Doe",
+      "heading": "Mes Projets",
+      "viewButton": "Voir le Projet",
+      "items": {
+        "project1": {
+          "title": "Projet 1",
+          "description": "Une application web Vue.js pour la gestion des tâches."
+        },
+        "project2": {
+          "title": "Projet 2",
+          "description": "Une plateforme e-commerce construite avec Vue et Node.js."
+        },
+        "project3": {
+          "title": "Projet 3",
+          "description": "Un site web portfolio responsive utilisant Vue et Tailwind CSS."
+        },
+        "project4": {
+          "title": "Projet 4",
+          "description": "Une application de chat en temps réel avec Vue et Firebase."
+        },
+        "project5": {
+          "title": "Projet 5",
+          "description": "Une autre application de chat en temps réel avec Vue et Firebase."
+        }
+      }
+    },
+    "contact": {
+      "name": "Contact",
+      "pageTitle": "Me Contacter | John Doe",
+      "heading": "Me Contacter",
+      "description": "N'hésitez pas à me contacter par email ou à me retrouver sur les réseaux sociaux !",
+      "emailButton": "M'envoyer un email",
+      "socialNames": {
+        "linkedin": "LinkedIn",
+        "github": "GitHub",
+        "instagram": "Instagram"
+      }
+    }
   },
   "settings": {
     "theme": {
@@ -12,7 +121,7 @@
       "system": "Système ({theme})"
     },
     "accentColor": {
-      "label": "Couleur d'accent",
+      "label": "Couleur d'accentuation",
       "emerald": "Émeraude",
       "green": "Vert",
       "lime": "Citron vert",
@@ -43,7 +152,7 @@
       "label": "Langue"
     },
     "customize": {
-      "label": "Personnalisez votre expérience"
+      "label": "Personnaliser votre expérience"
     }
   }
 }
