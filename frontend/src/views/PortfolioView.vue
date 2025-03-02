@@ -1,10 +1,13 @@
 <script setup>
 import { provide, ref, defineAsyncComponent, onMounted, onBeforeUnmount, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 import SettingsButton from '@/components/SettingsButton.vue';
 import StarryBackground from '@/components/StarryBackground.vue';
 import portfolioData from '@/portfolio-data.json';
 import NavigationDots from '@/components/NavigationDots.vue';
+
+const { t } = useI18n();
 
 // Initialize Vue Router and Route
 const router = useRouter();
@@ -41,8 +44,12 @@ const updateUrl = (index) => {
 };
 
 // Updates the document title based on the active section.
-const updateTitle = (title) => {
-  document.title = title;
+const updateTitle = (index) => {
+  const section = sections[index];
+  if (section && section.translationKey) {
+    const pageTitleKey = `${section.translationKey}.pageTitle`;
+    document.title = t(pageTitleKey);
+  }
 };
 
 /**
@@ -76,7 +83,7 @@ const navigateToSection = (index, smooth = true) => {
 
     // Update the document title
     if (sections[index]) {
-      updateTitle(sections[index].pageTitle);
+      updateTitle(index);
     }
   } else {
     console.warn(`Section at index ${index} not found`);
@@ -134,7 +141,7 @@ onMounted(() => {
 
         // Update the document title
         if (sections[initialSectionIndex]) {
-          updateTitle(sections[initialSectionIndex].pageTitle);
+          updateTitle(initialSectionIndex);
         }
 
         // Force scroll to element
@@ -164,7 +171,7 @@ onMounted(() => {
 
               // Update the document title when section changes
               if (sections[index]) {
-                updateTitle(sections[index].pageTitle);
+                updateTitle(index);
               }
             }
           }
