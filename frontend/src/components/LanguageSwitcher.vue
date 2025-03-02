@@ -31,7 +31,7 @@ const updateLocale = async (newLang) => {
 <template>
   <div class="flex items-center justify-between w-full">
     <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
-      Language:
+      {{ $t('settings.language.label') }}:
     </span>
     <div class="relative">
       <select :value="locale" @change="updateLocale($event.target.value)"

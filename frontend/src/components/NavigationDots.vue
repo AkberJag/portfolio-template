@@ -1,5 +1,8 @@
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   sections: {
@@ -14,7 +17,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['navigate'])
-
 const hoveredIndex = ref(null)
 const showLabel = ref(false)
 const labelTimer = ref(null)
@@ -54,11 +56,15 @@ const getDotClasses = (index) => ({
 const navigateToSection = (index) => {
   if (index === props.activeSection) return
   emit('navigate', index)
-
   if (isTouchDevice.value) {
     hoveredIndex.value = index
     setTimeout(() => hoveredIndex.value = null, 1500)
   }
+}
+
+// Get localized navigation label
+const getNavigationAriaLabel = (sectionName) => {
+  return t('aria.navigateToSection', { section: sectionName })
 }
 
 watch(() => props.activeSection, (newVal, oldVal) => {
@@ -79,9 +85,9 @@ watch(() => props.activeSection, (newVal, oldVal) => {
         <div class="w-4 h-4 flex items-center justify-center">
           <button @click="navigateToSection(index)" @mouseenter="!isTouchDevice && (hoveredIndex = index)"
             @mouseleave="!isTouchDevice && (hoveredIndex = null)" :class="getDotClasses(index)"
-            :aria-label="`Navigate to ${section.name}`" :aria-current="activeSection === index ? 'page' : undefined" />
+            :aria-label="getNavigationAriaLabel(section.name)"
+            :aria-current="activeSection === index ? 'page' : undefined" />
         </div>
-
         <Transition enter-active-class="transition ease-out duration-300" enter-from-class="opacity-0 -translate-x-2"
           leave-active-class="transition ease-in duration-300" leave-to-class="opacity-0 -translate-x-2">
           <div v-if="hoveredIndex === index || (activeSection === index && showLabel)"
