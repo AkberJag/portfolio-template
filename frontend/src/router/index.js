@@ -13,13 +13,15 @@ const routes = [
         name: 'portfolio-section',
         component: () => import('@/views/PortfolioView.vue'),
       },
+      {
+        path: 'i18nexample',
+        name: 'i18n-example',
+        component: () =>
+          import('@/features/example/views/ExampleComponent.vue'),
+      },
     ],
   },
-  {
-    path: '/:lang([a-z]{2})?/i18nexample',
-    name: 'i18n-example',
-    component: () => import('@/features/example/views/ExampleComponent.vue'),
-  },
+
   // Fallback route for invalid paths
   {
     path: '/:pathMatch(.*)*',
