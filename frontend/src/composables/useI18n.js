@@ -1,3 +1,23 @@
+/**
+ * Composable for loading and using feature-specific translations.
+ *
+ * @param {string} feature - The path to the feature's translation directory (e.g., 'example' or 'example/another').
+ * @returns {Object} - Returns translation utilities:
+ *   - `t(key, options)`: Translation function for the feature's keys.
+ *   - `isLoading`: Ref indicating if translations are being loaded.
+ *   - `reload()`: Function to reload translations for the current locale.
+ *
+ * @example
+ * // For translations in `features/example/locale`:
+ * const { t } = useFeatureTranslations('example')
+ * t('greeting') // Translates 'greeting' key
+ *
+ * @example
+ * // For translations in `features/example/another/locale`:
+ * const { t } = useFeatureTranslations('example/another')
+ * t('greeting') // Translates 'greeting' key
+ */
+
 import { watch, ref, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import i18n from '@/i18n'
