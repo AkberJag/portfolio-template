@@ -1,92 +1,243 @@
 #!/bin/bash
-# Build and deploy script for publishing frontend dist folder to GitHub Pages
-#
-# This script automates the process of building a frontend project and deploying
-# the `dist` folder to the `gh-pages` branch on GitHub for hosting via GitHub Pages.
-#
-# Key Steps:
-# 1. Verifies that the script is run from the project root and checks for the `frontend` directory.
-# 2. Navigates to the `frontend` directory and checks for `package.json` to ensure it's a Node.js project.
-# 3. Installs dependencies (if not already installed), then builds the project using `npm run build`.
-# 4. Checks if the build was successful by verifying the existence of the `dist` folder.
-# 5. Commits the new build, adds the `dist` folder to Git, and pushes it to the `gh-pages` branch using `git subtree`.
-# 6. Pushes the latest changes to the current branch of the repository.
-#
-# Exit on any error to prevent partial or broken deployment.
-# Includes helpful error messages and logs for troubleshooting.
-#
-# How to run this script:
-# 1. Ensure you're in the project root directory.
-# 2. Run the following command in the terminal:
-# bash scripts/deploy_gh_pages.sh
-#
-# This assumes the script is located in the `scripts/` folder. If it's located elsewhere,
-# adjust the path accordingly when running the script.
-#
-set -e
-echo "🚀 Starting build and deployment process..."
+set -o pipefail
+
+# Exit immediately if a command exits with a non-zero status, with proper error handling
+trap 'exit_status=$?; cleanup; exit $exit_status' ERR
+
+# Colors for terminal output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+RESET='\033[0m' # Reset color
+
+# Function to display help message
+show_help() {
+  echo -e "${BLUE}Usage:${RESET} ./$(basename "$0") [OPTIONS]"
+  echo
+  echo -e "${YELLOW}Description:${RESET}"
+  echo "  This script builds and deploys a Vue application to GitHub Pages."
+  echo "  It handles both the main application and Vitepress documentation if present."
+  echo
+  echo -e "${YELLOW}Options:${RESET}"
+  echo "  -h, --help     Display this help message and exit"
+  echo
+  echo -e "${YELLOW}Requirements:${RESET}"
+  echo "  - Git and npm must be installed"
+  echo "  - Must be run from the project root directory (containing the 'frontend' folder)"
+  echo "  - Working directory must be clean (no uncommitted changes)"
+  echo
+  echo -e "${YELLOW}Process:${RESET}"
+  echo "  1. Checks environment and prerequisites"
+  echo "  2. Builds the Vue application and documentation"
+  echo "  3. Deploys to the gh-pages branch"
+  echo "  4. Pushes to GitHub Pages"
+  echo
+  echo -e "${YELLOW}Examples:${RESET}"
+  echo "  ./$(basename "$0")"
+  echo "  ./$(basename "$0") --help"
+}
+
+# Function to print colored messages
+print_message() {
+  echo -e "${2}${1}${RESET}"
+}
+
+# Parse command line arguments
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+    *)
+      print_message "Unknown parameter: $1" "$RED"
+      show_help
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+# Setup logging for debugging
+LOG_FILE="deploy.log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+print_message "Logging output to $LOG_FILE" "$BLUE"
+
+# Store the start directory
+START_DIR=$(pwd)
+TEMP_DIR=""
+CURRENT_BRANCH=""
+
+# Cleanup function
+cleanup() {
+  cd "$START_DIR" || print_message "Failed to return to start directory" "$RED"
+  
+  if [[ -n "$CURRENT_BRANCH" && "$(git branch --show-current)" != "$CURRENT_BRANCH" ]]; then
+    print_message "Switching back to $CURRENT_BRANCH branch..." "$BLUE"
+    git switch "$CURRENT_BRANCH" || print_message "Failed to switch back to $CURRENT_BRANCH" "$RED"
+  fi
+  
+  if [[ -n "$TEMP_DIR" && -d "$TEMP_DIR" ]]; then
+    print_message "Cleaning up temporary files..." "$YELLOW"
+    rm -rf "$TEMP_DIR"
+  fi
+}
+
+# Set trap to call cleanup function on exit, interrupt, or error
+trap cleanup EXIT INT TERM
+
+# Check if git and npm are installed
+for cmd in git npm; do
+  if ! command -v $cmd &> /dev/null; then
+    print_message "$cmd is not installed. Please install it first." "$RED"
+    exit 1
+  fi
+done
 
 # Ensure we're in the project root
 if [ ! -d "frontend" ]; then
-    echo "❌ Error: frontend directory not found. Are you in the project root?"
-    exit 1
+  print_message "Error: frontend directory not found. Make sure you're running this from the project root." "$RED"
+  exit 1
 fi
 
-# Navigate to frontend directory
-cd frontend
+# Store current branch name
+CURRENT_BRANCH=$(git branch --show-current)
+print_message "Current branch: $CURRENT_BRANCH" "$BLUE"
 
-# Check if package.json exists
-if [ ! -f "package.json" ]; then
-    echo "❌ Error: package.json not found in frontend directory"
-    exit 1
+# Fetch latest changes
+print_message "Fetching latest changes from origin..." "$CYAN"
+git fetch origin
+
+# Check if the local branch is ahead of the remote
+if git status | grep -q "Your branch is ahead of"; then
+  print_message "Error: Your branch '$CURRENT_BRANCH' is ahead of 'origin/$CURRENT_BRANCH'." "$RED"
+  print_message "Please push your changes before deploying: git push origin $CURRENT_BRANCH" "$YELLOW"
+  exit 1
 fi
 
-# Get version from package.json
-VERSION=$(node -p "require('./package.json').version")
-if [ -z "$VERSION" ]; then
-    echo "⚠️ Warning: Could not get version from package.json, using 'latest' instead"
-    VERSION="latest"
+# Ensure the working directory is clean
+if [[ -n $(git status --porcelain) ]]; then
+  print_message "Error: Working directory is not clean. Please commit or stash your changes before deploying." "$RED"
+  exit 1
 fi
 
-# Install dependencies if node_modules doesn't exist
+# Create a temporary directory for the build
+TEMP_DIR=$(mktemp -d)
+print_message "Created temporary directory for build: $TEMP_DIR" "$BLUE"
+
+# Install dependencies only if necessary
+print_message "Checking dependencies..." "$YELLOW"
+cd frontend || exit 1
+
 if [ ! -d "node_modules" ]; then
-    echo "📦 Installing dependencies..."
-    npm install
-fi
-
-# Build the project
-echo "🔨 Building the project..."
-npm run build
-
-# Check if build was successful
-if [ ! -d "dist" ]; then
-    echo "❌ Build failed: dist directory not found"
-    exit 1
-fi
-
-# Go back to project root
-cd ..
-
-# Force add and commit the new build
-echo "📝 Committing the new build..."
-git add frontend/dist -f
-git commit -m "🚀 deploy: Deploy version ${VERSION}" || echo "No changes to commit"
-
-echo "📦 Publishing frontend/dist folder to gh-pages branch..."
-
-# Get the current git branch
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-
-# Push the subtree
-if git subtree push --prefix frontend/dist origin gh-pages; then
-    echo "✅ Successfully deployed to GitHub Pages!"
+  print_message "node_modules not found. Installing dependencies..." "$YELLOW"
+  npm install || { print_message "Failed to install dependencies." "$RED"; exit 1; }
 else
-    echo "❌ Deployment failed. If you get a 'updates were rejected' error, try running:"
-    echo "git push origin `git subtree split --prefix frontend/dist $current_branch`:gh-pages --force"
+  print_message "Dependencies already installed. Skipping npm install." "$GREEN"
 fi
 
-# Push changes to remote
-echo "🔄 Pushing changes to remote..."
-git push origin $current_branch
+# Clean old build artifacts
+print_message "Cleaning old build artifacts..." "$YELLOW"
+rm -rf dist docs/.vitepress/dist .vitepress/dist
 
-echo "✨ All done! Version ${VERSION} has been deployed to GitHub Pages and pushed to remote."
+# Build the Vue application
+print_message "Building Vue application..." "$YELLOW"
+npm run build || { print_message "Failed to build Vue application." "$RED"; exit 1; }
+
+# Validate Vue build output
+if [ -d "dist" ] && [ "$(ls -A dist)" ]; then
+  print_message "Vue build successful - output directory: $(pwd)/dist" "$GREEN"
+else
+  print_message "Error: Vue build directory (dist) is empty or missing." "$RED"
+  exit 1
+fi
+
+# Build Vitepress documentation if detected
+print_message "Setting up Vitepress documentation..." "$YELLOW"
+
+if grep -q "vitepress" package.json; then
+  print_message "Vitepress detected in package.json" "$CYAN"
+  
+  if grep -q "\"docs:build\"" package.json; then
+    print_message "Running docs:build script..." "$YELLOW"
+    npm run docs:build || print_message "Warning: Failed to build docs with docs:build script." "$YELLOW"
+  else
+    print_message "No docs:build script found. Attempting direct Vitepress build..." "$YELLOW"
+    npx vitepress build docs || print_message "Warning: Failed to build Vitepress docs." "$YELLOW"
+  fi
+fi
+
+# Locate and copy built Vitepress docs
+DOCS_COPIED=false
+mkdir -p "$TEMP_DIR/docs"
+
+if [ -d "docs/.vitepress/dist" ]; then
+  print_message "Found Vitepress docs at docs/.vitepress/dist" "$GREEN"
+  cp -r docs/.vitepress/dist/* "$TEMP_DIR/docs/"
+  DOCS_COPIED=true
+elif [ -d ".vitepress/dist" ]; then
+  print_message "Found Vitepress docs at .vitepress/dist" "$GREEN"
+  cp -r .vitepress/dist/* "$TEMP_DIR/docs/"
+  DOCS_COPIED=true
+else
+  print_message "No built Vitepress docs found. Copying raw docs instead..." "$YELLOW"
+  [ -d "docs" ] && cp -r docs "$TEMP_DIR/"
+  DOCS_COPIED=true
+fi
+
+if [ "$DOCS_COPIED" = false ]; then
+  print_message "Warning: No documentation files were copied." "$YELLOW"
+fi
+
+# Copy Vue build to temp directory
+print_message "Copying Vue build files to temp directory..." "$CYAN"
+cp -r dist/* "$TEMP_DIR/"
+
+# Return to project root
+cd "$START_DIR" || exit 1
+
+# Deploy to GitHub Pages
+TARGET_BRANCH="gh-pages"
+print_message "Target branch: $TARGET_BRANCH" "$BLUE"
+
+if git show-ref --verify --quiet refs/heads/$TARGET_BRANCH; then
+  git switch $TARGET_BRANCH
+else
+  git switch --orphan $TARGET_BRANCH
+  git rm -rf . --ignore-unmatch
+  touch .nojekyll
+fi
+
+# Remove all files except .git and .nojekyll
+print_message "Cleaning $TARGET_BRANCH branch..." "$PURPLE"
+find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '.nojekyll' -exec rm -rf {} \;
+
+# Copy build files
+print_message "Copying build files to $TARGET_BRANCH branch..." "$CYAN"
+cp -r "$TEMP_DIR"/* .
+
+# Ensure .nojekyll is present
+touch .nojekyll
+
+# Stage all files
+print_message "Staging files for commit..." "$GREEN"
+git add -A
+
+# Commit changes
+print_message "Committing changes to $TARGET_BRANCH branch..." "$GREEN"
+git commit -m "Deploy to GitHub Pages: $(date)"
+
+# Push to GitHub Pages
+if ! git push origin $TARGET_BRANCH; then
+  print_message "Push failed. Re-attempting with --force-with-lease..." "$YELLOW"
+  git push --force-with-lease origin $TARGET_BRANCH || {
+    print_message "Force-with-lease failed. Manual intervention required." "$RED"
+    exit 1
+  }
+fi
+
+# Print success message
+print_message "✅ Deployment to GitHub Pages completed successfully!" "$GREEN"
