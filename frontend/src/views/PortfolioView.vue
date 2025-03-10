@@ -64,7 +64,7 @@ const navigateToSection = (index, smooth = true) => {
     return;
   }
 
-  const sectionElements = container.value.querySelectorAll('.snap-start');
+  const sectionElements = container.value.querySelectorAll('.section-container');
 
   if (!sectionElements || sectionElements.length === 0) {
     console.warn('No section elements found for navigation');
@@ -118,7 +118,7 @@ const sectionComponents = Object.fromEntries(
 onMounted(() => {
   // Use a longer delay to ensure all dynamic components are properly loaded and rendered
   setTimeout(() => {
-    const sectionElements = container.value.querySelectorAll('.snap-start');
+    const sectionElements = container.value.querySelectorAll('.section-container');
 
     if (!sectionElements || sectionElements.length === 0) {
       console.warn('No section elements found. Components may not be fully rendered yet.');
@@ -159,6 +159,11 @@ onMounted(() => {
       initialLoadComplete.value = true;
     }, 200); // Longer delay to ensure scrolling has completed
 
+    // Fix for Chrome: Ensure the container height is explicitly set
+    if (container.value) {
+      container.value.style.height = '100vh';
+    }
+
     // Create an Intersection Observer to detect when sections become active
     observer = new IntersectionObserver(
       (entries) => {
@@ -185,7 +190,7 @@ onMounted(() => {
 
     // Observe each section element
     sectionElements.forEach((el) => observer.observe(el));
-  });
+  }, 300); // Increased timeout for Chrome
 });
 
 // Cleanup the observer when the component is unmounted
@@ -201,13 +206,15 @@ onBeforeUnmount(() => {
   <!-- Scroll container with snap behavior -->
   <div ref="container"
     class="w-full h-screen overflow-y-scroll snap-y snap-mandatory bg-slate-100 dark:bg-gray-900 transition-colors duration-700"
-    :class="showScrollbar ? 'scrollbar-visible' : 'scrollbar-hidden'">
+    :class="showScrollbar ? 'scrollbar-visible' : 'scrollbar-hidden'"
+    style="min-height: 100vh; height: 100vh; overscroll-behavior: none;">
     <!-- Starry background component -->
     <StarryBackground />
 
     <!-- Render each section dynamically -->
-    <div v-for="(section, index) in sections" :key="index" class="w-full h-screen flex flex-col snap-start"
-      :id="section.path">
+    <div v-for="(section, index) in sections" :key="index"
+      class="w-full h-screen flex flex-col snap-start section-container relative" :id="section.path"
+      style="flex: 0 0 100vh;">
       <div class="flex-grow overflow-y-auto">
         <!-- Dynamically load the section component -->
         <component :is="sectionComponents[section.component]" :section="section" />
@@ -222,3 +229,30 @@ onBeforeUnmount(() => {
     <SettingsButton class="z-20" />
   </div>
 </template>
+
+<style scoped>
+/* Additional styles to fix Chrome's scroll snapping behavior */
+.snap-y {
+  scroll-snap-type: y mandatory;
+}
+
+.snap-start {
+  scroll-snap-align: start;
+}
+
+/* Prevent overscroll */
+:deep(html),
+:deep(body) {
+  overscroll-behavior: none;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Force each section to be exactly viewport height */
+.section-container {
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  position: relative;
+}
+</style>
